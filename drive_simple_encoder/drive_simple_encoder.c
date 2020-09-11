@@ -32,9 +32,9 @@ enum speed {
 
 
 // Global Variables for encoders
-int avg_rotation = 1562.45;
+int avg_rotation = 1562;
 double one_rotation = M_PI * 0.084; // one rotation in M
-
+uint64_t wait_time = 1E6;
 
 // function declarations
 double DC(enum direction, enum speed);
@@ -60,6 +60,7 @@ static void __signal_handler(__attribute__ ((unused)) int dummy)
 
 int main()
 {
+
 	// make sure another instance isn't running
 	if(rc_kill_existing_process(2.0)<-2) return -1;
 
@@ -96,6 +97,13 @@ int main()
 	int right_rotation = 0;
 	int left_rotation = 0;
 	double distance = 0;
+	int turn_total = 0;
+	// bool whether to skip distance when turning
+	int dist_calc = 1; 
+
+	// move forward initially
+	rc_motor_set(RIGHT, DC(FWD, SLOW));
+	rc_motor_set(LEFT , DC(FWD, SLOW));
 
 	while(rc_get_state()!=EXITING){
 		// print encoder readings
@@ -105,38 +113,94 @@ int main()
 		left_encoder = rc_encoder_read(LEFT);
 	
 		// add rotation distance (previous rotations)
-		distance =(double) ((right_rotation + left_rotation) / 2) 
-		// add encoder distance (< 1 rotation)
-		distance +=(double) (abs(right_encoder) + abs(left_encoder)) / (2 * avg_rotation);
-		// multiply total by circumference of wheel
-		distance *= one_rotation; // Meters
-	
+		if(dist_calc)
+		{
+			distance =(double) ((right_rotation + left_rotation) / 2);
+			// add encoder distance (< 1 rotation)
+			distance +=(double) (abs(right_encoder) + abs(left_encoder)) / (2 * avg_rotation);
+			// multiply total by circumference of wheel
+			distance *= one_rotation; // Meters
+
+			// check if right encoder has completed a rotation
+			if(abs(right_encoder) >= avg_rotation)
+			{
+				right_rotation++;
+				if(rc_encoder_write(RIGHT, 0) == -1)
+				{
+					fprintf(stderr,"ERROR: FAILED ENCODER WRITE FOR RIGHT ENCODER");
+				}
+			}
+			// check if left encoder has completed a rotation
+			if(abs(left_encoder) >= avg_rotation)
+			{
+				left_rotation++;
+				if(rc_encoder_write(LEFT, 0) == -1)
+				{
+					fprintf(stderr, "ERROR: FAILED ENCODER WRITE FOR LEFT ENCODER");
+				}
+			}
+		}
 		
 		// print values to terminal
 		printf("%10d |%10d | %10f (meters)", right_encoder, left_encoder, distance);
 
-		// check if right encoder has completed a rotation
-		if(abs(right_encoder) >= avg_rotation)
-		{
-			right_rotation++;
-			if(rc_encoder_write(RIGHT, 0) == -1)
+
+		
+		// check if > 1 M fwd traveled or 90 deg turned
+		if(distance >= 1.0){
+			// stop
+			rc_motor_set(RIGHT, (double) STP);
+			rc_motor_set(LEFT, (double) STP);
+			printf("\nTURNING\n");
+			rc_nanosleep(wait_time);
+			
+			// reset encoders
+			rc_encoder_write(LEFT, 0);
+			rc_encoder_write(RIGHT, 0);
+			
+			// turn
+			rc_motor_set(RIGHT, DC(FWD, SLOW));
+			rc_motor_set(LEFT, DC(BWD, SLOW));
+			
+			// add a turn
+			turn_total++;
+
+			// set distance to turn flag value
+			dist_calc = 0;
+			distance = 0; 
+
+		}else if(dist_calc == 0 && (right_encoder > (avg_rotation/2)) && (left_encoder > (avg_rotation/2)) ){
+			printf("\nMOVING FORWARD\n");
+			// stop
+			rc_motor_set(RIGHT, (double) STP);
+			rc_motor_set(LEFT, (double) STP);
+			rc_nanosleep(wait_time);
+			
+			// reset encoders
+			rc_encoder_write(LEFT, 0);
+			rc_encoder_write(RIGHT, 0);
+			
+			// reset distance rotations and flag
+			distance = 0;
+			left_rotation = 0;
+			right_rotation = 0; 
+			dist_calc = 1;
+			
+			// check if we're done
+			if(turn_total == 4)
 			{
-				fprintf(stderr,"ERROR: FAILED ENCODER WRITE FOR RIGHT ENCODER");
+				rc_set_state(EXITING);
+			}else{
+				// move forward
+				rc_motor_set(RIGHT, DC(FWD, SLOW));
+				rc_motor_set(LEFT , DC(FWD, SLOW));	
 			}
 		}
-		// check if left encoder has completed a rotation
-		if(abs(left_encoder) >= avg_rotation)
-		{
-			left_rotation++;
-			if(rc_encoder_write(LEFT, 0) == -1)
-			{
-				fprintf(stderr, "ERROR: FAILED ENCODER WRITE FOR LEFT ENCODER");
-			}
-		}
+
 		// flush output
 		fflush(stdout);
 		// quick sleep
-		rc_nanosleep(100000);
+		rc_nanosleep(wait_time);
 	}
 
 	// CLEANUP 
