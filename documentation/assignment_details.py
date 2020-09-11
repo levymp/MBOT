@@ -1,21 +1,35 @@
 import streamlit as st
 
 
+st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='collapsed')
+
 st.title('MBot-Mini Setup & Intro Assignment')
+
 st.write('''
-**1.1 Build and setup your Mini-MBot**\n
+**Assembly **
+''')
+
+st.video('https://www.youtube.com/watch?v=HLtRFjogLS4')
+
+st.write('''
+**1.1 Build and setup of MBot**\n
 Here is a video of my Mini-MBOT driving around using the teleop_simple program.
 ''')
 
+st.video('https://www.youtube.com/watch?v=lfkwy5WPypM')
 
 # Video of MBOT driving with teleop
 # st.video('')
 
 st.write('''
-**1.2 Video of MBOT-Mini driving around in a square:**\n
+**1.2 Video of MBOT-Mini driving around in a square (timed):**\n
 Here is a video of my MBOT driving around on three different surfaces.'''
 )
 # Video of MBOT driving around in naive square
-# st.video('')
+st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
 
 # 
+st.write('''
+**1.3 Video of MBOT-Mini driving around in a square (timed):**\n
+Here is a video of my MBOT driving around on three different surfaces.'''
+)
