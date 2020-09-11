@@ -166,7 +166,7 @@ int main()
 			turn_total++;
 			
 			// turn
-			printf("\nTURN NUMBER %d", turn_total)
+			printf("\nTURN NUMBER %d", turn_total);
 			rc_motor_set(RIGHT, DC(FWD, SLOW));
 			rc_motor_set(LEFT, DC(BWD, SLOW));
 			

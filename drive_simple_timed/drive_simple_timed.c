@@ -56,7 +56,8 @@ double DC(enum direction, enum speed);
 // interrupt handler to catch ctrl-c
 static void __signal_handler(__attribute__ ((unused)) int dummy)
 {
-        running=0;
+        printf("INTERRUPTED EXITING\n");
+		rc_set_state(EXITING);
         return;
 }
 
@@ -73,11 +74,9 @@ int main()
 	// define times to drive in nano seconds
 	uint64_t fwd_time = 5E9;
 	// define time to turn
-	uint64_t turn_time = 7.1E8;
+	uint64_t turn_time = 1E9;
 	// define time to wait
 	uint64_t wait_time = 4E8;
-
-	int i;
 
 	// initialize motors
 	if(rc_motor_init() == -1)
@@ -86,11 +85,15 @@ int main()
 		return -1;
 	}
 
-	// SET Signal Handler
+	// set Signal Handler
 	signal(SIGINT, __signal_handler); 
+
 	// make PID file to indicate project is running
 	rc_make_pid_file();
 
+	// time to get the camera ready...
+	rc_nanosleep(fwd_time); 
+	// set the state
 	printf("RUNNING.....\n");
 	rc_set_state(RUNNING);
 
@@ -98,8 +101,10 @@ int main()
 	int turn_total = 0;
 
 	// loop to go around four times until signal recieved or interrupt triggered
-	while(rc_get_staet() != EXITING){
+	while(rc_get_state() != EXITING){
+		
 		// forward
+		printf("MOVING FORWARD\n");
 		rc_motor_set (RIGHT, DC(FWD, SLOW));
 		rc_motor_set(LEFT , DC(FWD, SLOW));
 		rc_nanosleep(fwd_time);
@@ -110,6 +115,7 @@ int main()
 		rc_nanosleep(wait_time);
 		
 		// turn
+		printf("TURNING\n");
 		rc_motor_set(RIGHT, DC(FWD, SLOW));
 		rc_motor_set(LEFT, DC(BWD, SLOW));
 		rc_nanosleep(turn_time);
@@ -125,7 +131,8 @@ int main()
 		// Check if turn total is 4 and if so exit
 		if(turn_total == 4)
 		{
-			rc_set_stat(EXITING);
+			printf("FOUR TURNS COMPLETED! EXITING!\n");
+			rc_set_state(EXITING);
 		}
 	}
 
