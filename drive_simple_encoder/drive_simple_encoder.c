@@ -6,12 +6,42 @@
 #include <stdio.h>
 #include <robotcontrol.h> // includes ALL Robot Control subsystems
 #include <signal.h>
+#include <math.h>
+#include <stdlib.h>
+
+
+// Define Enums
+enum motor {
+    RIGHT = 1,
+    LEFT = 2,
+};
+
+enum direction {
+	FWD = 1, 
+	BWD = -1
+};
+
+enum speed {
+	FST = 100, 
+	MEDF = 75,
+	MED = 50,
+	SLOW = 25,
+	STP = 0
+};
+
+
+
+// Global Variables for encoders
+int avg_rotation = 1562.45;
+double one_rotation = M_PI * 0.084; // one rotation in M
+
 
 // function declarations
+double DC(enum direction, enum speed);
 
 
 /**
- * This template contains these critical components
+ * critical components:
  * - ensure no existing instances are running and make new PID file
  * - start the signal handler
  * - initialize subsystems you wish to use
@@ -20,8 +50,6 @@
  *
  * @return     0 during normal operation, -1 on error
  */
-
-static int RUNNING = 0;
 
 // Interrupt from RC Library
 static void __signal_handler(__attribute__ ((unused)) int dummy)
@@ -53,24 +81,60 @@ int main()
 	// make PID file to indicate project is running
 	rc_make_pid_file();
 
-	printf("RUNNING.....\n")
+	printf("RUNNING.....\n");
 
 	printf("\nENCODER POSITIONS\n");
-	printf("ENCODER 1 |");
-	printf("ENCODER 2 |");
+	printf("RIGHT WHEEL |");
+	printf("LEFT WHEEL |");
+	printf("DISTANCE |");
+
 	printf(" \n");
 
 	// Keep looping until state changes to EXITING
 	rc_set_state(RUNNING);
-	int i;
+	int right_encoder, left_encoder;
+	int right_rotation = 0;
+	int left_rotation = 0;
+	double distance = 0;
+
 	while(rc_get_state()!=EXITING){
 		// print encoder readings
 		printf("\r");
-		for(i = 1; i <=2; i++)
+		// Read encoder
+		right_encoder = rc_encoder_read(RIGHT);
+		left_encoder = rc_encoder_read(LEFT);
+	
+		// add rotation distance (previous rotations)
+		distance =(double) ((right_rotation + left_rotation) / 2) 
+		// add encoder distance (< 1 rotation)
+		distance +=(double) (abs(right_encoder) + abs(left_encoder)) / (2 * avg_rotation);
+		// multiply total by circumference of wheel
+		distance *= one_rotation; // Meters
+	
+		
+		// print values to terminal
+		printf("%10d |%10d | %10f (meters)", right_encoder, left_encoder, distance);
+
+		// check if right encoder has completed a rotation
+		if(abs(right_encoder) >= avg_rotation)
 		{
-			printf("%10d |", rc_encoder_read(i));
+			right_rotation++;
+			if(rc_encoder_write(RIGHT, 0) == -1)
+			{
+				fprintf(stderr,"ERROR: FAILED ENCODER WRITE FOR RIGHT ENCODER");
+			}
 		}
-		fflush("stdout");
+		// check if left encoder has completed a rotation
+		if(abs(left_encoder) >= avg_rotation)
+		{
+			left_rotation++;
+			if(rc_encoder_write(LEFT, 0) == -1)
+			{
+				fprintf(stderr, "ERROR: FAILED ENCODER WRITE FOR LEFT ENCODER");
+			}
+		}
+		// flush output
+		fflush(stdout);
 		// quick sleep
 		rc_nanosleep(100000);
 	}
@@ -78,7 +142,7 @@ int main()
 	// CLEANUP 
 	if(rc_encoder_cleanup() == -1)
 	{
-		frpintf(stderr, "ERROR: ENCODER CLEANUP FAILED\n");
+		fprintf(stderr, "ERROR: ENCODER CLEANUP FAILED\n");
 		return -1;
 	}
 	if(rc_motor_cleanup() == -1)
@@ -91,3 +155,8 @@ int main()
 	return 0;
 }
 
+double DC(enum direction d, enum speed s)
+{
+	double result =(double) d * s * 0.01;
+    return result;
+}
