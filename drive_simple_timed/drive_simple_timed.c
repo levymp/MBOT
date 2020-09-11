@@ -1,20 +1,15 @@
 /**
  * @file drive_simple_timed.c
  *
+ * This file drives the MBOT in a square using pre-determined times. 
  */
 
 #include <stdio.h>
 #include <robotcontrol.h> // includes ALL Robot Control subsystems
 #include <rc/motor.h>
 #include <rc/time.h>
-// #include <signal.h>
+#include <signal.h>
 
-// interrupt handler to catch ctrl-c
-// static void __signal_handler(__attribute__ ((unused)) int dummy)
-// {
-//         running=0;
-//         return;
-// }
 
 
 enum motor {
@@ -56,6 +51,16 @@ double DC(enum direction, enum speed);
  *
  * @return     0 during normal operation, -1 on error
  */
+
+
+// interrupt handler to catch ctrl-c
+static void __signal_handler(__attribute__ ((unused)) int dummy)
+{
+        running=0;
+        return;
+}
+
+
 int main()
 {
 	// make sure another instance isn't running
@@ -64,32 +69,78 @@ int main()
 	// not continue or there may be hardware conflicts. If it returned -4
 	// then there was an invalid argument that needs to be fixed.
 	if(rc_kill_existing_process(2.0)<-2) return -1;
+	
+	// define times to drive in nano seconds
 	uint64_t fwd_time = 5E9;
+	// define time to turn
 	uint64_t turn_time = 7.1E8;
+	// define time to wait
 	uint64_t wait_time = 4E8;
 
 	int i;
-	rc_motor_init();
-	for(i=0; i < 4; i++){
+
+	// initialize motors
+	if(rc_motor_init() == -1)
+	{
+		fprintf(stderr, "ERROR FAILED TO INIT MOTORS\n");
+		return -1;
+	}
+
+	// SET Signal Handler
+	signal(SIGINT, __signal_handler); 
+	// make PID file to indicate project is running
+	rc_make_pid_file();
+
+	printf("RUNNING.....\n");
+	rc_set_state(RUNNING);
+
+	// turn toal sum
+	int turn_total = 0;
+
+	// loop to go around four times until signal recieved or interrupt triggered
+	while(rc_get_staet() != EXITING){
 		// forward
 		rc_motor_set (RIGHT, DC(FWD, SLOW));
 		rc_motor_set(LEFT , DC(FWD, SLOW));
 		rc_nanosleep(fwd_time);
+		
 		// stop
 		rc_motor_set(RIGHT, (double) STP);
 		rc_motor_set(LEFT, (double) STP);
 		rc_nanosleep(wait_time);
+		
 		// turn
 		rc_motor_set(RIGHT, DC(FWD, SLOW));
 		rc_motor_set(LEFT, DC(BWD, SLOW));
 		rc_nanosleep(turn_time);
+		
 		// stop
 		rc_motor_set(RIGHT, (double) STP);
 		rc_motor_set(LEFT, (double) STP);
 		rc_nanosleep(wait_time);
+		
+		// Add a turn
+		turn_total++;
+		
+		// Check if turn total is 4 and if so exit
+		if(turn_total == 4)
+		{
+			rc_set_stat(EXITING);
+		}
 	}
-	rc_motor_cleanup();
+
 	
+	// RC Motor Cleanup
+	if(rc_motor_cleanup() == -1)
+	{
+		fprintf(stderr, "ERROR: MOTOR CLEANUP FAILED\n");
+		return -1;
+	}
+
+	rc_remove_pid_file();	// remove pid file LAST
+	return 0;
+
+	// Past code...
 	// move(TURN_RIGHT, SLOW, 7E5);
 
 	// move(FORWARD, SLOW, 14);
@@ -100,8 +151,6 @@ int main()
 	
 	// move(FORWARD, SLOW, 14);
 	// move(TURN_RIGHT, SLOW, .7);
-	
-	return 0;
 }
 
 // direction, speed, time (s)

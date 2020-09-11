@@ -82,8 +82,11 @@ int main()
 	// make PID file to indicate project is running
 	rc_make_pid_file();
 
+	// Start Running
+	rc_set_state(RUNNING);
 	printf("RUNNING.....\n");
 
+	// Terminal Encoder View
 	printf("\nENCODER POSITIONS\n");
 	printf("RIGHT WHEEL |");
 	printf("LEFT WHEEL |");
@@ -92,7 +95,6 @@ int main()
 	printf(" \n");
 
 	// Keep looping until state changes to EXITING
-	rc_set_state(RUNNING);
 	int right_encoder, left_encoder;
 	int right_rotation = 0;
 	int left_rotation = 0;
@@ -112,7 +114,7 @@ int main()
 		right_encoder = rc_encoder_read(RIGHT);
 		left_encoder = rc_encoder_read(LEFT);
 	
-		// add rotation distance (previous rotations)
+		// add rotation distance if traveling forward (dist_calc flg == true when traveling forward)
 		if(dist_calc)
 		{
 			distance =(double) ((right_rotation + left_rotation) / 2);
@@ -121,7 +123,8 @@ int main()
 			// multiply total by circumference of wheel
 			distance *= one_rotation; // Meters
 
-			// check if right encoder has completed a rotation
+			// check if right encoder has completed a full rotation
+			// if so set it to zero and add a rotation
 			if(abs(right_encoder) >= avg_rotation)
 			{
 				right_rotation++;
@@ -130,7 +133,8 @@ int main()
 					fprintf(stderr,"ERROR: FAILED ENCODER WRITE FOR RIGHT ENCODER");
 				}
 			}
-			// check if left encoder has completed a rotation
+			// check if left encoder has completed a full rotation
+			// if so set it to zero and add a rotation
 			if(abs(left_encoder) >= avg_rotation)
 			{
 				left_rotation++;
@@ -144,31 +148,34 @@ int main()
 		// print values to terminal
 		printf("%10d |%10d | %10f (meters)", right_encoder, left_encoder, distance);
 
-
-		
 		// check if > 1 M fwd traveled or 90 deg turned
+		// if we've covered a meter, stop -> start turning
 		if(distance >= 1.0){
 			// stop
 			rc_motor_set(RIGHT, (double) STP);
 			rc_motor_set(LEFT, (double) STP);
 			printf("\nTURNING\n");
 			rc_nanosleep(wait_time);
-			
+
 			// reset encoders
 			rc_encoder_write(LEFT, 0);
 			rc_encoder_write(RIGHT, 0);
 			
+			
+			// add a turn to the total
+			turn_total++;
+			
 			// turn
+			printf("\nTURN NUMBER %d", turn_total)
 			rc_motor_set(RIGHT, DC(FWD, SLOW));
 			rc_motor_set(LEFT, DC(BWD, SLOW));
 			
-			// add a turn
-			turn_total++;
-
-			// set distance to turn flag value
+			// stop calculating distance 
 			dist_calc = 0;
+			// reset distance
 			distance = 0; 
 
+		// check if we're turning (dist_calc == False), and our two encoders have covered half a rotation (90 deg turn)
 		}else if(dist_calc == 0 && (right_encoder > (avg_rotation/2)) && (left_encoder > (avg_rotation/2)) ){
 			printf("\nMOVING FORWARD\n");
 			// stop

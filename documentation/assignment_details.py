@@ -5,8 +5,9 @@ st.title('MBot-Mini Setup & Intro Assignment')
 st.write('''
 **1.1 Build and setup your Mini-MBot**\n
 Here is a video of my Mini-MBOT driving around using the teleop_simple program.
-
 ''')
+
+
 # Video of MBOT driving with teleop
 # st.video('')
 
