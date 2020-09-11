@@ -1,0 +1,4 @@
+.vscode/settings.json
+tests/enum_test
+drive_simple_encoder/drive_simple_encoder
+drive_simple_encoder/drive_simple_encoder.o
