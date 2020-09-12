@@ -43,15 +43,19 @@ st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
 
 st.write('''### **Encoder Data**  
 *This is data from each encoder in order to measure the average rotation of one wheel.*  
-*This helped me be able to build the logic around what makes a 90&deg turn or covering one 1 meter.*''')
+*Calculating the average rotation helped me build the logic around a 90&deg turn or covering one 1 meter.*''')
 
 df = pd.read_excel('/home/michaellevy/projects/MBOT/documentation/encoder_values.xlsx')
 st.table(df)
 
 
 st.write('''
-## **1.4 MBOT Description**
+## **Observations**
 ### Surface Performance:  
 The MBOT performed well on hardwood floors and polished tiles. 
+
+### Turning:
+
+
 
 ''')
