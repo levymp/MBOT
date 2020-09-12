@@ -1,5 +1,4 @@
-MBOT Development
-####################
+# MBOT Development  
 All work related to the MBOT completed by Michael Levy and part template code from the ROB 550 class at University of Michigan. 
 
 ## Usage
