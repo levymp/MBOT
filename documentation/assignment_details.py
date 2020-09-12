@@ -6,7 +6,10 @@ st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', 
 st.title('MBot Setup')
 
 st.write('''
-***Please forgive the cheesy music in my videos 😊.***
+Michigan Bot *(MBOT)* is a small mobile robot used with the Graduate Robotics Systems Laboratory course at University of Michigan.
+Below is my intitial work completed on the robot.\n
+***Please forgive the cheesy music in my videos 😊***\n
+
 
 ## **Assembly**   
 *Timelapse of robot assembly.*
