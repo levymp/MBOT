@@ -1,35 +1,57 @@
 import streamlit as st
-
+import pandas as pd
 
 st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='collapsed')
 
-st.title('MBot-Mini Setup & Intro Assignment')
+st.title('MBot Setup')
 
 st.write('''
-**Assembly **
+***Please ignore the cheesy music in my videos 😊.***
+
+## **Assembly**   
+*Timelapse of robot assembly.*
 ''')
 
+# assembly timelapse
 st.video('https://www.youtube.com/watch?v=HLtRFjogLS4')
 
 st.write('''
-**1.1 Build and setup of MBot**\n
-Here is a video of my Mini-MBOT driving around using the teleop_simple program.
+## **Simple Driving**   
+*MBOT driving around using the teleop_simple program.*
 ''')
 
+# teleop video
 st.video('https://www.youtube.com/watch?v=lfkwy5WPypM')
 
-# Video of MBOT driving with teleop
-# st.video('')
 
 st.write('''
-**1.2 Video of MBOT-Mini driving around in a square (timed):**\n
-Here is a video of my MBOT driving around on three different surfaces.'''
+## **MBOT Driven by timer:**   
+*Simple program written to control robot based purely on time. This was using my best 
+guess as to the time it took the robot to turn or travel 1 meter.*'''
 )
+
 # Video of MBOT driving around in naive square
-st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
+# st.video()
 
 # 
 st.write('''
-**1.3 Video of MBOT-Mini driving around in a square (timed):**\n
-Here is a video of my MBOT driving around on three different surfaces.'''
+## **MBOT Driven by encoder readings:**   
+*MBOT driving around on three different surfaces using the encoders to track distance. See on screen display to show encoder readings and distance traveled.*'''
 )
+st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
+
+
+st.write('''### **Encoder Data**  
+*This is data from each encoder in order to measure the average rotation of one wheel.*  
+*This helped me be able to build the logic around what makes a 90&deg turn or covering one 1 meter.*''')
+
+df = pd.read_excel('/home/michaellevy/projects/MBOT/documentation/encoder_values.xlsx')
+st.table(df)
+
+
+st.write('''
+## **1.4 MBOT Description**
+### Surface Performance:  
+The MBOT performed well on hardwood floors and polished tiles. 
+
+''')
