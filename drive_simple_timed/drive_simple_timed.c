@@ -74,7 +74,7 @@ int main()
 	// define times to drive in nano seconds
 	uint64_t fwd_time = 5E9;
 	// define time to turn
-	uint64_t turn_time = 1E9;
+	uint64_t turn_time = 1.2E9;
 	// define time to wait
 	uint64_t wait_time = 4E8;
 

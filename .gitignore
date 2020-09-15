@@ -2,3 +2,5 @@
 tests/enum_test
 drive_simple_encoder/drive_simple_encoder
 drive_simple_encoder/drive_simple_encoder.o
+drive_simple_timed/drive_simple_timed
+drive_simple_timed/drive_simple_timed.o
