@@ -1,4 +1,19 @@
+# Ignore VSCODE Settings
 .vscode/settings.json
+
+# Ignore compiled files
 tests/enum_test
 drive_simple_encoder/drive_simple_encoder
-drive_simple_encoder/drive_simple_encoder.o
+
+# Ignore the bin
+bin/
+
+# ignore .o files
+/common/*.o
+/lcmtypes/*o
+/mobilebot/*o
+/measure_motor_params/*o
+# /drive_simple_encoder/*o
+/drive_simple_encoder/*o
+/drive_simple/*o
+/test_motos/*o
