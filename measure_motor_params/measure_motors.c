@@ -25,7 +25,10 @@ float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
 
 void test_speed(float du, float dtime_s);
 
-int main(){
+int main(int argc, char *argv[]){
+	if(argc != 3){
+		return 0;
+	}
 
 	// make sure another instance isn't running
     // if return value is -3 then a background process is running with
@@ -72,17 +75,7 @@ int main(){
 		rc_nanosleep(1E9); //sleep for 1s
 	}
 
-	int x = 0;
-	while(x < 10){
-		int enc1 = rc_encoder_eqep_read(1);
-		int enc2 = rc_encoder_eqep_read(2);
-		x++;
-		rc_nanosleep(1E9); //sleep for 1s
-		int denc1 = enc1 - rc_encoder_eqep_read(1);
-		int denc2 = enc2 - rc_encoder_eqep_read(2);
-		printf("den1:%d dend2:%d\n", denc1, denc2);
-	}
-	
+	time_speed(argv[1], argv[2]);
 	// TODO: Plase exit routine here
 	rc_encoder_eqep_cleanup();
 	rc_motor_cleanup();
@@ -92,5 +85,16 @@ int main(){
 }
 
 void test_speed(float duty, float dtime_s){
+	rc_motor_set (1, duty);
+	rc_motor_set (2, duty);
+	int enc1 = rc_encoder_eqep_read(1);
+	int enc2 = rc_encoder_eqep_read(2);
+	rc_nanosleep(dtime_s*1e9); //sleep for dtime_s
+	int denc1 = enc1 - rc_encoder_eqep_read(1);
+	int denc2 = enc2 - rc_encoder_eqep_read(2);
+	rc_motor_set (1, 0);
+	rc_motor_set (2, 0);
+	float spL = ((float) denc1/1565)/dtime_s;
+	float spR = ((float) denc1/1558)/dtime_s;
 
 }
