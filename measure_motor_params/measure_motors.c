@@ -25,10 +25,6 @@ float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
 
 void test_speed(float du, float dtime_s);
 
-/*******************************************************************************
-* int main() 
-*
-*******************************************************************************/
 int main(){
 
 	// make sure another instance isn't running
@@ -71,17 +67,28 @@ int main(){
 
 	// done initializing so set state to RUNNING
 	rc_set_state(RUNNING);
-
+	
 	if(rc_get_state()==RUNNING){
+		rc_nanosleep(1E9); //sleep for 1s
+	}
+
+	int x = 0;
+	while(x < 10){
+		int enc1 = rc_encoder_eqep_read(1);
+		int enc2 = rc_encoder_eqep_read(2);
+		printf("en1:%d end2:%d\n", enc1, enc2);
+		x++;
 		rc_nanosleep(1E9); //sleep for 1s
 	}
 	
 	// TODO: Plase exit routine here
-
+	rc_encoder_eqep_cleanup();
+	rc_motor_cleanup();
     // remove pid file LAST
-	rc_remove_pid_file();   
+	rc_remove_pid_file();  
 	return 0;
 }
 
 void test_speed(float duty, float dtime_s){
+
 }
