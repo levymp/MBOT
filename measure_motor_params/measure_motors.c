@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
 		rc_nanosleep(1E9); //sleep for 1s
 	}
 
-	time_speed(argv[1], argv[2]);
+	time_speed((float) argv[1], (float) argv[2]);
 	// TODO: Plase exit routine here
 	rc_encoder_eqep_cleanup();
 	rc_motor_cleanup();
@@ -95,6 +95,6 @@ void test_speed(float duty, float dtime_s){
 	rc_motor_set (1, 0);
 	rc_motor_set (2, 0);
 	float spL = ((float) denc1/1565)/dtime_s;
-	float spR = ((float) denc1/1558)/dtime_s;
-
+	float spR = ((float) denc2/1558)/dtime_s;
+	printf("spL:%f spR:%f for duty:%f\n", spL, spR, duty);
 }
