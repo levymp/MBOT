@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
 	if(rc_get_state()==RUNNING){
 		rc_nanosleep(1E9); //sleep for 1s
 	}
-
+	
 	test_speed((float) atof(argv[1]), (float) atof(argv[2]));
 	// TODO: Plase exit routine here
 	rc_encoder_eqep_cleanup();
