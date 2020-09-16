@@ -1,8 +1,7 @@
+
 /*******************************************************************************
 * measure_motor_params.c
-*   Template code 
-*   Complete this code to automatically measure motor parameters
-*   or print out data to be namalyzed in numpy
+*  Edited by Sam Ansaldo, for part 1.1 of MBOT projects
 * 
 *******************************************************************************/
 #include <stdio.h>
