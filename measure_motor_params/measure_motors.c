@@ -75,7 +75,7 @@ int main(int argc, char *argv[]){
 		rc_nanosleep(1E9); //sleep for 1s
 	}
 
-	time_speed((float) argv[1], (float) argv[2]);
+	test_speed((float) argv[1], (float) argv[2]);
 	// TODO: Plase exit routine here
 	rc_encoder_eqep_cleanup();
 	rc_motor_cleanup();
