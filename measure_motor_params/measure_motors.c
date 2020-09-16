@@ -76,9 +76,11 @@ int main(){
 	while(x < 10){
 		int enc1 = rc_encoder_eqep_read(1);
 		int enc2 = rc_encoder_eqep_read(2);
-		printf("en1:%d end2:%d\n", enc1, enc2);
 		x++;
 		rc_nanosleep(1E9); //sleep for 1s
+		int denc1 = enc1 - rc_encoder_eqep_read(1);
+		int denc2 = enc2 - rc_encoder_eqep_read(2);
+		printf("den1:%d dend2:%d\n", enc1, enc2);
 	}
 	
 	// TODO: Plase exit routine here
