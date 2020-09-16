@@ -80,7 +80,7 @@ int main(){
 		rc_nanosleep(1E9); //sleep for 1s
 		int denc1 = enc1 - rc_encoder_eqep_read(1);
 		int denc2 = enc2 - rc_encoder_eqep_read(2);
-		printf("den1:%d dend2:%d\n", enc1, enc2);
+		printf("den1:%d dend2:%d\n", denc1, denc2);
 	}
 	
 	// TODO: Plase exit routine here
