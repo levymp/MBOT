@@ -27,6 +27,9 @@ int mb_initialize_controller(){
 
 
 int mb_load_controller_config(){
+    char buf[100];
+    getcwd(buf, sizeof(buf));
+    printf("%s\n", buf);
     FILE* file = fopen(CFG_PATH, "r");
     if (file == NULL){
         printf("Error opening pid.cfg\n");
