@@ -3,7 +3,7 @@
 
 
 #include "../mobilebot/mobilebot.h"
-#define CFG_PATH "../MBOT/bin/pid.cfg"
+#define CFG_PATH "pid.cfg"
 
 int mb_initialize_controller();
 int mb_load_controller_config();
