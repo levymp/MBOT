@@ -3,7 +3,7 @@
 
 
 #include "../mobilebot/mobilebot.h"
-#define CFG_PATH "/home/debian/mobilebot-w20/bin/pid.cfg"
+#define CFG_PATH "/home/debian/MBOT/bin/pid.cfg"
 
 int mb_initialize_controller();
 int mb_load_controller_config();
