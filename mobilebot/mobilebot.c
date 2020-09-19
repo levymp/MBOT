@@ -210,8 +210,8 @@ void mobilebot_controller(){
     update_now();
     read_mb_sensors();
     mb_controller_update(&mb_state, &mb_setpoints);
-    mb_motor_set(LEFT_MOTOR, mb_state->left_cmd);
-    mb_motor_set(RIGHT_MOTOR, mb_state->right_cmd);
+    mb_motor_set(LEFT_MOTOR, mb_state.left_cmd);
+    mb_motor_set(RIGHT_MOTOR, mb_state.right_cmd);
     publish_mb_msgs();
 }
 
