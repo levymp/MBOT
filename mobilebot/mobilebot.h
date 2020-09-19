@@ -44,6 +44,8 @@
 #include "../common/mb_odometry.h"
 #include "../common/mb_motor.h"
 
+#define PI 3.14159265358979323846
+
 // global variables
 lcm_t * lcm;
 rc_mpu_data_t imu_data;
