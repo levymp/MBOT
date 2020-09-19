@@ -35,21 +35,14 @@ int mb_load_controller_config(){
         printf("Error opening pid.cfg\n");
     }
 
-    char * kp, ki;
-    fscanf(file, "%f %f", kp, ki);
 
-/******
-*
-*   Example of loading a line from .cfg file:
-*
-*    fscanf(file, "%f %f %f %f", 
-*        &pid_params.kp,
-*        &pid_params.ki,
-*        &pid_params.kd,
-*        &pid_params.dFilterHz
-*        );
-*
-******/
+    fscanf(file, "%f %f %f %f", 
+        &pid_params.kp,
+        &pid_params.ki,
+        &pid_params.kd,
+        &pid_params.dFilterHz
+        );
+
 
     fclose(file);
     return 0;
