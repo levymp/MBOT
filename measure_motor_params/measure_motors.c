@@ -21,6 +21,7 @@
 #include "../common/mb_motor.h"
 #include "../common/mb_defs.h"
 
+#define PI 3.14159265358979323846
 
 float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
 
@@ -30,7 +31,7 @@ void test_speed(float du, float dtime_s);
 * int main() 
 *
 *******************************************************************************/
-int main(){
+int main(int argc, char** argv){
 
 	// make sure another instance isn't running
     // if return value is -3 then a background process is running with
@@ -76,6 +77,8 @@ int main(){
 	if(rc_get_state()==RUNNING){
 		rc_nanosleep(1E9); //sleep for 1s
 	}
+
+    test_speed((float)atof(argv[1]), (float)atof(argv[2]));
 	
 	// TODO: Plase exit routine here
 
@@ -85,4 +88,35 @@ int main(){
 }
 
 void test_speed(float duty, float dtime_s){
+    rc_encoder_eqep_init();
+    rc_motor_init();
+
+    int enc_init_left = rc_encoder_eqep_read(LEFT_MOTOR);
+    int enc_init_right = rc_encoder_eqep_read(RIGHT_MOTOR);
+
+    rc_motor_set(LEFT_MOTOR, duty);
+	rc_motor_set(RIGHT_MOTOR, duty);
+
+	rc_nanosleep(dtime_s * 1e9);
+
+	int enc_end_left = rc_encoder_eqep_read(LEFT_MOTOR);
+	int enc_end_right = rc_encoder_eqep_read(RIGHT_MOTOR);
+
+	rc_motor_set (LEFT_MOTOR, 0);
+	rc_motor_set (RIGHT_MOTOR, 0);
+
+    rc_motor_cleanup();
+    rc_encoder_eqep_cleanup();
+
+    int enc_diff_left = enc_end_left - enc_init_left;
+    int enc_diff_right = enc_end_right - enc_init_right;
+
+    double wheel_speed_left = (double)enc_diff_left * enc2meters / dtime_s;
+    double wheel_speed_right = (double)enc_diff_right * enc2meters / dtime_s;
+
+    // printf("initial encoder count: %d %d\n", enc_init_left, enc_init_right);
+    // printf("end encoder count: %d %d\n", enc_end_left, enc_end_right);
+    printf("%lf %lf\n", wheel_speed_left, wheel_speed_right);
+
+    return;
 }

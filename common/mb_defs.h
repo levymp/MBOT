@@ -14,16 +14,16 @@
 //#define MRC_VERSION_2v1
 #define BEAGLEBONE_BLUE
 #define DEFAULT_PWM_FREQ        25000 // period of motor drive pwm
-#define LEFT_MOTOR              1     // id of left motor
-#define RIGHT_MOTOR             2     // id of right motor
+#define LEFT_MOTOR              2     // id of left motor
+#define RIGHT_MOTOR             1     // id of right motor
 
 // TODO: Add convienient defines to define things like motor and encoder polarity here
 
 // TODO: Fill in physical propeties of robot
-#define GEAR_RATIO              0.0  // gear ratio of motor
-#define ENCODER_RES             0.0  // encoder counts per motor shaft revolution
-#define WHEEL_DIAMETER          0.0 // diameter of wheel in meters
-#define WHEEL_BASE              0.0  // wheel separation distance in meters
+#define GEAR_RATIO              78.125 // gear ratio of motor
+#define ENCODER_RES             20.0 // encoder counts per motor shaft revolution
+#define WHEEL_DIAMETER          0.084 // diameter of wheel in meters
+#define WHEEL_BASE              0.2  // wheel separation distance in meters
 #define MAX_FWD_VEL             0.8   // maximum forwad speed (m/s)
 #define MAX_TURN_VEL            2.5   // maximum turning speed (rad/s)
 
