@@ -42,7 +42,7 @@ int mb_load_controller_config(){
         &r_wheel_speed_params.kd,
         &r_wheel_speed_params.dFilterHz);
 
-    int rc_filter_pid(pid_fil_l, l_wheel_speed_params->kp,
+    int rc_filter_pid(pid_fil_l, 1,
         l_wheel_speed_params->ki,
         l_wheel_speed_params->kd,
         l_wheel_speed_params->dFilterHz/2,
