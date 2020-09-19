@@ -21,8 +21,6 @@
 #include "../common/mb_motor.h"
 #include "../common/mb_defs.h"
 
-#define PI 3.14159265358979323846
-
 float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
 
 void test_speed(float du, float dtime_s);
