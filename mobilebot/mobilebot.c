@@ -209,7 +209,7 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
-    mb_controler_update(&mb_state, &mb_setpoints);
+    mb_controller_update(&mb_state, &mb_setpoints);
     publish_mb_msgs();
 }
 
