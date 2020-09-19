@@ -210,7 +210,6 @@ void mobilebot_controller(){
     update_now();
     read_mb_sensors();
     publish_mb_msgs();
-
 }
 
 
@@ -381,8 +380,8 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.x);
 			printf("%7.3f  |", mb_odometry.y);
 			printf("%7.3f  |", mb_odometry.theta);
-			printf("%7.3f  |", mb_setpoints.fwd_velocity);
-            printf("%7.3f  |", mb_setpoints.turn_velocity);
+			printf("%7.3f  |", mb_state.right_cmd);
+            printf("%7.3f  |", mb_state.left_cmd);
 
 			fflush(stdout);
 		}
