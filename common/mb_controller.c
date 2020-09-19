@@ -42,8 +42,7 @@ int mb_load_controller_config(){
         &r_wheel_speed_params.kd,
         &r_wheel_speed_params.dFilterHz);
 
-    int rc_filter_pid(pid_fil_l, 
-        l_wheel_speed_params->kp,
+    int rc_filter_pid(pid_fil_l, l_wheel_speed_params->kp,
         l_wheel_speed_params->ki,
         l_wheel_speed_params->kd,
         l_wheel_speed_params->dFilterHz/2,
@@ -72,7 +71,7 @@ int mb_load_controller_config(){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
-    printf(mb_state->left_encoder_delta);
+    printf("%f", mb_state->left_encoder_delta);
     mb_state->left_cmd = rc_filter_march(pd_fil_l, 1);
     mb_state->right_cmd = rc_filter_march(pd_fil_r, 1);
     return 0;
