@@ -24,8 +24,10 @@ int mb_destroy_controller();
 * pid_parameters_t left_wheel_speed_params;
 * filter_parameters_t fwd_vel_sp_lpf_params;
 ************/
-pid_parameters_t left_wheel_speed_params;
-pid_parameters_t right_wheel_speed_params;
+rc_filter_t pid_fil_l;
+rc_filter_t pid_fil_r;
+pid_parameters_t l_wheel_speed_params;
+pid_parameters_t r_wheel_speed_params;
 
 #endif
 
