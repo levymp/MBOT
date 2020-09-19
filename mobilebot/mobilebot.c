@@ -381,8 +381,8 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.x);
 			printf("%7.3f  |", mb_odometry.y);
 			printf("%7.3f  |", mb_odometry.theta);
-			printf("%d  |", mb_state.left_encoder_delta);
-            printf("%d  |", mb_state.right_encoder_delta);
+			printf("%d  |", mb_state.left_cmd);
+            printf("%d  |", mb_state.right_cmd);
 
 			fflush(stdout);
 		}
