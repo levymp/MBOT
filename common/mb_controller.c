@@ -42,14 +42,14 @@ int mb_load_controller_config(){
         &r_wheel_speed_params.kd,
         &r_wheel_speed_params.dFilterHz);
 
-    rc_filter_pid(&pid_fil_l, 
+    rc_filter_pid(&pid_filt_l, 
         l_wheel_speed_params.kp,
         l_wheel_speed_params.ki,
         l_wheel_speed_params.kd,
         l_wheel_speed_params.dFilterHz,
         l_wheel_speed_params.dFilterHz);
 
-    rc_filter_pid(&pid_fil_r, 
+    rc_filter_pid(&pid_filt_r, 
         r_wheel_speed_params.kp,
         r_wheel_speed_params.ki,
         r_wheel_speed_params.kd,
@@ -72,8 +72,8 @@ int mb_load_controller_config(){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
-    mb_state->left_cmd = rc_filter_march(&pid_fil_l, mb_state->left_encoder_delta/SAMPLE_RATE_HZ);
-    mb_state->right_cmd = rc_filter_march(&pid_fil_r, mb_state->left_encoder_delta/SAMPLE_RATE_HZ);
+    mb_state->left_cmd = rc_filter_march(&pid_filt_l, mb_state->left_encoder_delta/SAMPLE_RATE_HZ);
+    mb_state->right_cmd = rc_filter_march(&pid_filt_r, mb_state->left_encoder_delta/SAMPLE_RATE_HZ);
     return 0;
 }
 
