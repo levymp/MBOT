@@ -42,15 +42,15 @@ int mb_load_controller_config(){
         &r_wheel_speed_params.kd,
         &r_wheel_speed_params.dFilterHz);
 
-    pid_filt_l = RC_FILTER_INITIALIZER;
-    pid_filt_r = RC_FILTER_INITIALIZER;
-
-    rc_filter_pid(&pid_filt_l, 
+    if(rc_filter_pid(&pid_filt_l, 
         l_wheel_speed_params.kp,
         l_wheel_speed_params.ki,
         l_wheel_speed_params.kd,
         l_wheel_speed_params.dFilterHz,
-        l_wheel_speed_params.dFilterHz);
+        l_wheel_speed_params.dFilterHz) == -1){
+        fprintf(stderr,"ERROR: failed to start signal handler\n");
+        return 0;
+    }
 
     rc_filter_pid(&pid_filt_r, 
         r_wheel_speed_params.kp,
