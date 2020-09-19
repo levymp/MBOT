@@ -67,6 +67,7 @@ int main(){
 	mb_initialize_controller();
 
 	printf("initializing motors...\n");
+    mb_motor_init();
 #if defined(MRC_VERSION_1v3) || defined(MRC_VERSION_2v1)
 	mb_motor_init();
     mb_motor_brake(1);
