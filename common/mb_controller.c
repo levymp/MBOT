@@ -27,22 +27,35 @@ int mb_initialize_controller(){
 
 
 int mb_load_controller_config(){
-    char buf[100];
-    getcwd(buf, sizeof(buf));
-    printf("%s\n", buf);
     FILE* file = fopen(CFG_PATH, "r");
     if (file == NULL){
         printf("Error opening pid.cfg\n");
     }
 
-
-    fscanf(file, "%f %f %f %f", 
-        &pid_params.kp,
-        &pid_params.ki,
-        &pid_params.kd,
-        &pid_params.dFilterHz
+    fscanf(file, "%f %f %f %f %f %f %f %f", 
+        &l_wheel_speed_params.kp,
+        &l_wheel_speed_params.ki,
+        &l_wheel_speed_params.kd,
+        &l_wheel_speed_params.dFilterHz
+        &r_wheel_speed_params.kp,
+        &r_wheel_speed_params.ki,
+        &r_wheel_speed_params.kd,
+        &r_wheel_speed_params.dFilterHz
         );
 
+    int rc_filter_pid(pid_fil_l, 
+        l_wheel_speed_params.kp,
+        l_wheel_speed_params.ki,
+        l_wheel_speed_params.kd,
+        l_wheel_speed_params.dFilterHz/2,
+        l_wheel_speed_params.dFilterHz);
+
+    int rc_filter_pid(pid_fil_r, 
+        r_wheel_speed_params.kp,
+        r_wheel_speed_params.ki,
+        r_wheel_speed_params.kd,
+        r_wheel_speed_params.dFilterHz/2,
+        r_wheel_speed_params.dFilterHz);
 
     fclose(file);
     return 0;
@@ -60,6 +73,9 @@ int mb_load_controller_config(){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
+    printf(mb_state.left_encoder_delta);
+    mb_state.left_cmd = rc_filter_march(pd_fil_l, 1);
+    mb_state.right_cmd = rc_filter_march(pd_fil_r, 1);
     return 0;
 }
 
