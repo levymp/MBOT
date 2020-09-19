@@ -98,7 +98,7 @@ int main(){
 	// Keep looping until state changes to EXITING
 	while(rc_get_state()!=EXITING){
 		// other functions are handled in other threads
-		// there is no need to do anything here but sleep
+		// there is no neemobilebot_conmobilebot_controllerd to do anything here but sleep
         led_heartbeat();
         rc_nanosleep(7E8);
 	}
@@ -209,6 +209,7 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
+    mb_controler_update(&mb_state, &mb_setpoints);
     publish_mb_msgs();
 }
 
