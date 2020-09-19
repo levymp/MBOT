@@ -73,8 +73,8 @@ int mb_load_controller_config(){
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
     printf("%f", mb_state->left_encoder_delta);
-    mb_state->left_cmd = rc_filter_march(&pid_fil_l, 1);
-    mb_state->right_cmd = rc_filter_march(&pid_fil_r, 1);
+    mb_state->left_cmd = 1;
+    mb_state->right_cmd = 1;
     return 0;
 }
 
