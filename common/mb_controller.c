@@ -75,8 +75,8 @@ int mb_load_controller_config(){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
-    mb_state->left_cmd = rc_filter_march(&pid_filt_l, ((float) mb_state->left_encoder_delta)/(1/SAMPLE_RATE_HZ));
-    mb_state->right_cmd = rc_filter_march(&pid_filt_r, ((float) mb_state->right_encoder_delta)/(1/SAMPLE_RATE_HZ));
+    mb_state->left_cmd = rc_filter_march(&pid_filt_l, ((float) mb_state->left_encoder_delta)/(1.0/SAMPLE_RATE_HZ));
+    mb_state->right_cmd = rc_filter_march(&pid_filt_r, ((float) mb_state->right_encoder_delta)/(1.0/SAMPLE_RATE_HZ));
     return 0;
 }
 
