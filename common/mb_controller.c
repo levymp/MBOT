@@ -34,14 +34,14 @@ int mb_load_controller_config(){
     }
 
     fscanf(file, "%f %f %f %f %f %f %f %f", 
-        &l_wheel_speed_params.kp,
-        &l_wheel_speed_params.ki,
-        &l_wheel_speed_params.kd,
-        &l_wheel_speed_params.dFilterHz,
-        &r_wheel_speed_params.kp,
-        &r_wheel_speed_params.ki,
-        &r_wheel_speed_params.kd,
-        &r_wheel_speed_params.dFilterHz);
+        l_wheel_speed_params.kp,
+        l_wheel_speed_params.ki,
+        l_wheel_speed_params.kd,
+        l_wheel_speed_params.dFilterHz,
+        r_wheel_speed_params.kp,
+        r_wheel_speed_params.ki,
+        r_wheel_speed_params.kd,
+        r_wheel_speed_params.dFilterHz);
 
     if(rc_filter_pid(&pid_filt_l, 
         l_wheel_speed_params.kp,
