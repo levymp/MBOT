@@ -62,6 +62,7 @@ int mb_load_controller_config(){
         fprintf(stderr,"ERROR: failed to start signal handler\n");
         return 0;
     }
+    rc_filter_enable_saturation(&pid_filt_l, -1, 1);
     rc_filter_print(pid_filt_l);
 
     rc_filter_pid(&pid_filt_r, 
@@ -70,6 +71,7 @@ int mb_load_controller_config(){
         r_wheel_speed_params.kd,
         .04,
         .02);
+    rc_filter_enable_saturation(&pid_filt_r, -1, 1);
 
     fclose(file);
     return 0;
