@@ -19,7 +19,7 @@ stop_command.trans_v = 0.0
 stop_command.angular_v = 0.0
 
 drive_command = mbot_motor_command_t()
-drive_command.trans_v = 0.25 #go 0.25m in 1s
+drive_command.trans_v = 0.5 #go 0.25m in 1s
 drive_command.angular_v = 0.0
 
 turn_command = mbot_motor_command_t()
@@ -29,17 +29,17 @@ turn_command.angular_v = 3.1415/2.0 #turn 180 in 2s
 lc.publish("MBOT_MOTOR_COMMAND",drive_command.encode())
 sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",turn_command.encode())
-sleep(1.0)
+sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",drive_command.encode())
 sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",turn_command.encode())
-sleep(1.0)
+sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",drive_command.encode())
 sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",turn_command.encode())
-sleep(1.0)
+sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",drive_command.encode())
 sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",turn_command.encode())
-sleep(1.0)
+sleep(2.0)
 lc.publish("MBOT_MOTOR_COMMAND",stop_command.encode())
