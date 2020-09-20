@@ -108,7 +108,7 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 *******************************************************************************/
 
 int mb_destroy_controller(){
-    rc_fiter_free(pid_filt_l);
-    rc_fiter_free(pid_filt_r);
+    rc_filter_free(pid_filt_l);
+    rc_filter_free(pid_filt_r);
     return 0;
 }
