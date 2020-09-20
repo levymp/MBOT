@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <time.h>
+#include <dirent.h> 
 
 
 #include <rc/adc.h>
