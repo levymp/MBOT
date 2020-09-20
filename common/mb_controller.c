@@ -27,6 +27,24 @@ int mb_initialize_controller(){
 
 
 int mb_load_controller_config(){
+
+    char cwd[PATH_MAX];
+   if (getcwd(cwd, sizeof(cwd)) != NULL) {
+       printf("Current working dir: %s\n", cwd);
+   } else {
+       perror("getcwd() error");
+       return 1;
+   }
+   
+   DIR *d;
+  struct dirent *dir;
+  d = opendir(".");
+  if (d) {
+    while ((dir = readdir(d)) != NULL) {
+      printf("%s\n", dir->d_name);
+    }
+    closedir(d);
+  }
    
     FILE* file = fopen(CFG_PATH, "r");
     if (file == NULL){
