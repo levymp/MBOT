@@ -52,6 +52,7 @@ int mb_load_controller_config(){
         fprintf(stderr,"ERROR: failed to start signal handler\n");
         return 0;
     }
+    rc_filter_print(pid_filt_l);
 
     rc_filter_pid(&pid_filt_r, 
         r_wheel_speed_params.kp,
