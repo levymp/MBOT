@@ -97,7 +97,6 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 
     if(mb_state->left_cmd >= 1 || mb_state->left_cmd <= -1){
         rc_filter_reset(&pid_filt_l);
-        
     }
     if(mb_state->right_cmd >= 1 || mb_state->right_cmd <= -1){
         rc_filter_reset(&pid_filt_r);

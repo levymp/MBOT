@@ -370,6 +370,7 @@ void* printf_loop(void* ptr){
             printf("   TURN  |");
 
 			printf("\n");
+            
 		}
 		else if(new_state==PAUSED && last_state!=PAUSED){
 			printf("\nPAUSED\n");
@@ -386,7 +387,7 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_state.right_cmd);
 			printf("%7.3f  |", mb_state.left_cmd);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
-            printf("%7.4f  |", mb_setpoints.turn_velocity);
+            printf("%7.3f  |", mb_setpoints.turn_velocity);
 
 			fflush(stdout);
 		}
