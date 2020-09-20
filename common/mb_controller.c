@@ -94,6 +94,14 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     mb_state->fwd_velocity = vl;
     mb_state->left_cmd = rc_filter_march(&pid_filt_l, -(vl - mb_setpoints->fwd_velocity));
     mb_state->right_cmd = rc_filter_march(&pid_filt_r, -(vr - mb_setpoints->fwd_velocity));
+
+    if(mb_state->left_cmd >= 1 || mb_state->left_cmd <= -1){
+        rc_filter_print(pid_filt_l);
+        rc_filter_reset(&pid_filt_l);
+    }
+    if(mb_state->right_cmd >= 1 || mb_state->right_cmd <= -1){
+        rc_filter_reset(&pid_filt_r);
+    }
     return 0;
 }
 
