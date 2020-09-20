@@ -47,8 +47,8 @@ int mb_load_controller_config(){
         l_wheel_speed_params.kp,
         l_wheel_speed_params.ki,
         l_wheel_speed_params.kd,
-        DT*4,
-        DT) == -1){
+        l_wheel_speed_params.dFilterHz*4,
+        l_wheel_speed_params.dFilterHz) == -1){
         fprintf(stderr,"ERROR: failed to start signal handler\n");
         return 0;
     }
@@ -57,8 +57,8 @@ int mb_load_controller_config(){
         r_wheel_speed_params.kp,
         r_wheel_speed_params.ki,
         r_wheel_speed_params.kd,
-        DT*4,
-        DT);
+        r_wheel_speed_params.dFilterHz*4,
+        r_wheel_speed_params.dFilterHz);
 
     fclose(file);
     return 0;
@@ -76,7 +76,6 @@ int mb_load_controller_config(){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){ 
-    printf("%f\n", ((float) mb_state->left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES)));
     float vl = ((float) mb_state->left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(1.0/SAMPLE_RATE_HZ);
     float vr = ((float) mb_state->right_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(1.0/SAMPLE_RATE_HZ);
     mb_state->left_cmd = rc_filter_march(&pid_filt_l, mb_setpoints->fwd_velocity - vl);
