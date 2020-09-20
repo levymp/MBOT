@@ -54,8 +54,8 @@ int mb_load_controller_config(){
         l_wheel_speed_params.kp,
         l_wheel_speed_params.ki,
         l_wheel_speed_params.kd,
-        l_wheel_speed_params.dFilterHz*4,
-        l_wheel_speed_params.dFilterHz) == -1){
+        DT*4,
+        DT) == -1){
         fprintf(stderr,"ERROR: failed to start signal handler\n");
         return 0;
     }
@@ -64,8 +64,8 @@ int mb_load_controller_config(){
         r_wheel_speed_params.kp,
         r_wheel_speed_params.ki,
         r_wheel_speed_params.kd,
-        r_wheel_speed_params.dFilterHz*4,
-        r_wheel_speed_params.dFilterHz);
+        DT*4,
+        DT);
 
     fclose(file);
     return 0;
