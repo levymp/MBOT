@@ -97,7 +97,6 @@ int mb_motor_set(int motor, double duty){
         return -1;
     }
     rc_motor_set(motor, duty);
-    
     return 0;
 }
 
