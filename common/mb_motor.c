@@ -96,6 +96,7 @@ int mb_motor_set(int motor, double duty){
         fprintf(stderr,"ERROR: trying to rc_set_motor_all before they have been initialize\n");
         return -1;
     }
+    \
     rc_motor_set(motor, duty);
     return 0;
 }
