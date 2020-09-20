@@ -118,6 +118,7 @@ int main(){
     rc_motor_cleanup();
 #endif
     rc_encoder_cleanup();
+    mb_destroy_controller();
     rc_remove_pid_file();
 	return 0;
 }
