@@ -76,9 +76,8 @@ int mb_load_controller_config(){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){ 
-    float vl = ((float) mb_state->left_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES))/(1.0/SAMPLE_RATE_HZ);
-    printf("%f\n", vl);
-    float vr = ((float) mb_state->left_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES))/(1.0/SAMPLE_RATE_HZ);
+    float vl = ((float) mb_state->left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(1.0/SAMPLE_RATE_HZ);
+    float vr = ((float) mb_state->left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(1.0/SAMPLE_RATE_HZ);
     mb_state->left_cmd = rc_filter_march(&pid_filt_l, mb_setpoints->fwd_velocity - vl);
     mb_state->right_cmd = rc_filter_march(&pid_filt_r, mb_setpoints->fwd_velocity - vr);
 
