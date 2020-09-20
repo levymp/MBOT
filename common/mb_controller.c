@@ -48,7 +48,7 @@ int mb_load_controller_config(){
         l_wheel_speed_params.ki,
         l_wheel_speed_params.kd,
         .04,
-        .01) == -1){
+        .02) == -1){
         fprintf(stderr,"ERROR: failed to start signal handler\n");
         return 0;
     }
@@ -59,7 +59,7 @@ int mb_load_controller_config(){
         r_wheel_speed_params.ki,
         r_wheel_speed_params.kd,
         .04,
-        .01);
+        .02);
 
     fclose(file);
     return 0;
@@ -82,12 +82,12 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     mb_state->left_cmd = rc_filter_march(&pid_filt_l, mb_setpoints->fwd_velocity - vl);
     mb_state->right_cmd = rc_filter_march(&pid_filt_r, mb_setpoints->fwd_velocity - vr);
 
-    if(mb_state->left_cmd > 1){
+    /*if(mb_state->left_cmd > 1){
         rc_filter_reset(&pid_filt_l);
     }
     if(mb_state->right_cmd > 1){
         rc_filter_reset(&pid_filt_r);
-    }
+    }*/
     return 0;
 }
 
