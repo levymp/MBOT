@@ -28,7 +28,7 @@ int mb_initialize_controller(){
 
 int mb_load_controller_config(){
 
-    char cwd[PATH_MAX];
+    char cwd[100];
    if (getcwd(cwd, sizeof(cwd)) != NULL) {
        printf("Current working dir: %s\n", cwd);
    } else {
