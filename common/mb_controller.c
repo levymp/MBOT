@@ -27,7 +27,14 @@ int mb_initialize_controller(){
 
 
 int mb_load_controller_config(){
-    FILE* file = fopen(CFG_PATH, "r");
+    char cwd[100];
+   if (getcwd(cwd, sizeof(cwd)) != NULL) {
+       printf("Current working dir: %s\n", cwd);
+   } else {
+       perror("getcwd() error");
+       return 1;
+   }
+    FILE* file = fopen(CFG_PATH, "wr");
     if (file == NULL){
         printf("Error opening pid.cfg\n");
     }
