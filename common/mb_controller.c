@@ -34,6 +34,7 @@ int mb_load_controller_config(){
        perror("getcwd() error");
        return 1;
    }
+   
     FILE* file = fopen(CFG_PATH, "wr");
     if (file == NULL){
         printf("Error opening pid.cfg\n");
