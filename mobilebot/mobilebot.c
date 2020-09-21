@@ -147,7 +147,7 @@ void read_mb_sensors(){
     }
     float dt = .02;
     if(mb_state.lastup)  dt =  (float) (now -  mb_state.lastup)/10;
-    printf("%f\n", dt);t
+    printf("%f\n", dt);
     mb_state.lastup = now; 
     // Read encoders    
     mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
