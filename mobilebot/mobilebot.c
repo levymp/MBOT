@@ -149,6 +149,8 @@ void read_mb_sensors(){
     // Read encoders    
     mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
     mb_state.right_encoder_delta = rc_encoder_read(RIGHT_MOTOR);
+    mb_state.left_velocity = ((float) mb_state.left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT)
+    mb_state.right_velocity = ((float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT)
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
     rc_encoder_write(LEFT_MOTOR,0);
@@ -383,7 +385,7 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_state.tb_angles[2]);
 			printf("%7lld  |", mb_state.left_encoder_total);
 			printf("%7lld  |", mb_state.right_encoder_total);
-			printf("%7.3f  |", mb_state.fwd_velocity);
+			printf("%7.3f  |", mb_state.left_velocity);
 			printf("%7.3f  |", mb_state.right_cmd);
 			printf("%7.3f  |", mb_state.left_cmd);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
