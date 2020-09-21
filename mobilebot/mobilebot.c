@@ -146,7 +146,7 @@ void read_mb_sensors(){
         mb_state.mag[i] = imu_data.mag[i];
     }
     float dt = .02;
-    if(mb_state.lastup)  dt =  (float) (now -  mb_state.lastup)/10;
+    if(mb_state.lastup)  dt =  (float) (now -  mb_state.lastup)/1000000;
     printf("%f\n", dt);
     mb_state.lastup = now; 
     // Read encoders    
