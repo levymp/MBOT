@@ -380,7 +380,7 @@ void* printf_loop(void* ptr){
 		last_state = new_state;
 
 		if(new_state == RUNNING){
-			printf("\r");
+			//printf("\r");
 			//Add Print stattements here, do not follow with /n
 			printf("%7.3f  |", mb_state.tb_angles[2]);
 			printf("%7lld  |", mb_state.left_encoder_total);
