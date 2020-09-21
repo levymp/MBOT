@@ -17,3 +17,7 @@ bin/
 /drive_simple_encoder/*o
 /drive_simple/*o
 /test_motos/*o
+.DS_Store
+
+# ignore cache files
+/documentation/__pycache__
