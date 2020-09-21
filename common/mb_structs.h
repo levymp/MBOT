@@ -32,7 +32,7 @@ struct mb_state{
     float   left_cmd;  //left wheel command [-1..1]
     float   right_cmd; //right wheel command [-1..1]
 
-    float lastup;
+    int64_t lastup;
 
     //TODO: Add more variables to this state as needed
 };
