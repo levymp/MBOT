@@ -148,6 +148,7 @@ void read_mb_sensors(){
     float dt = .02;
     if(mb_state.lastup)  dt =  (float) (now -  mb_state.lastup)/1000000;
     
+    
     mb_state.lastup = now; 
     // Read encoders    
     mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
