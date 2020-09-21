@@ -378,8 +378,7 @@ void* printf_loop(void* ptr){
 			printf("\nPAUSED\n");
 		}
 		last_state = new_state;
-		
-        
+
 		if(new_state == RUNNING){
 			printf("\r");
 			//Add Print stattements here, do not follow with /n
