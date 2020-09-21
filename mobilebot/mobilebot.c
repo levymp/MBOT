@@ -387,7 +387,7 @@ void* printf_loop(void* ptr){
 			printf("%7lld  |", mb_state.right_encoder_total);
 			printf("%7.3f  |", mb_state.left_velocity);
 			printf("%7.3f  |", mb_state.left_cmd);
-			printf("%7.3f  |", mb_state.left_cmd);
+			printf("%7.3f  |", mb_state.left_velocity - mb_setpoints.fwd_velocity);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
             printf("%7.4f  |", mb_setpoints.turn_velocity);
 
