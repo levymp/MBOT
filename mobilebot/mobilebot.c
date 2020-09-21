@@ -145,7 +145,7 @@ void read_mb_sensors(){
         mb_state.gyro[i] = imu_data.gyro[i];
         mb_state.mag[i] = imu_data.mag[i];
     }
-    float dt = 0;
+    float dt = .02;
     if(mb_state.lastup)  dt =  (float) (now -  mb_state.lastup)/10;
     mb_state.lastup = now; 
     // Read encoders    
