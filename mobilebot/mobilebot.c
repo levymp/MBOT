@@ -145,12 +145,13 @@ void read_mb_sensors(){
         mb_state.gyro[i] = imu_data.gyro[i];
         mb_state.mag[i] = imu_data.mag[i];
     }
-
+    dt = now - mb_state.lastup;
+    mb_state.lastup = now; 
     // Read encoders    
     mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
     mb_state.right_encoder_delta = rc_encoder_read(RIGHT_MOTOR);
-    mb_state.left_velocity = ((float) mb_state.left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT);
-    mb_state.right_velocity = ((float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT);
+    mb_state.left_velocity = ((float) mb_state.left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(dT);
+    mb_state.right_velocity = ((float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(dT);
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
     rc_encoder_write(LEFT_MOTOR,0);

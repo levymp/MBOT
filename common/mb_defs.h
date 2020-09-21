@@ -15,7 +15,7 @@
 #define BEAGLEBONE_BLUE
 #define DEFAULT_PWM_FREQ        25000 // period of motor drive pwm
 #define LEFT_MOTOR              1     // id of left motor
-#define RIGHT_MOTOR             2     // id of right motor
+#define RIGHT_MOTOR             2     // id of right motor (encoders are switched 9.21.20)
 
 // TODO: Add convienient defines to define things like motor and encoder polarity here
 
