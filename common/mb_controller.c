@@ -33,7 +33,7 @@ int mb_load_controller_config(){
         printf("Error opening pid.cfg\n");
     }
 
-    fscanf(file, "%f %f %f %f %f %f %f %f %f", 
+    fscanf(file, "%f %f %f %f %f %f %f %f %f %f", 
         &l_wheel_speed_params.kp,
         &l_wheel_speed_params.ki,
         &l_wheel_speed_params.kd,
