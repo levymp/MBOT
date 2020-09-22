@@ -59,5 +59,6 @@ struct pid_parameters {
     float dFilterHz;
     float out_lim;
     float int_lim;
+    float FF_term;
 };
 #endif
