@@ -42,7 +42,7 @@ int mb_load_controller_config(){
         &r_wheel_speed_params.kp,
         &r_wheel_speed_params.ki,
         &r_wheel_speed_params.kd,
-        &r_wheel_speed_params.dFilterHz
+        &r_wheel_speed_params.dFilterHz,
         &r_wheel_speed_params.FF_term);
 
     printf("%f %f %f %f %f %f %f %f", 
