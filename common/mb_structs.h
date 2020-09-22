@@ -40,6 +40,8 @@ struct mb_setpoints{
 
     float fwd_velocity; // fwd velocity in m/s
     float turn_velocity; // turn velocity in rad/s
+    float old_fwd;
+    float old_turn;
     int manual_ctl;
 };
 

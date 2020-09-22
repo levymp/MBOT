@@ -92,6 +92,9 @@ int mb_load_controller_config(){
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){ 
 
+    if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd)
+        mb_controller_filter_reset(mb_state, mb_setpoints);
+
     mb_state->left_cmd -= rc_filter_march(&pid_filt_l, (double) (mb_state->left_velocity - mb_setpoints->fwd_velocity));
     mb_state->right_cmd -= rc_filter_march(&pid_filt_r, (double) (mb_state->right_velocity - mb_setpoints->fwd_velocity));
 
@@ -99,6 +102,7 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 }
 
 int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
+    mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
     rc_filter_reset(&pid_filt_l);
     rc_filter_reset(&pid_filt_r);
     mb_state->left_cmd = l_wheel_speed_params.FF_term*mb_setpoints->fwd_velocity;
