@@ -1,53 +1,27 @@
-#include "../mobilebot/mobilebot.h"
-/*
-* @file mb_controller.c
-// @author - Michael Levy + ROB 550 Template
-*/
-/*******************************************************************************
-* int mb_initialize()
-*
-* this initializes all the PID controllers from the configuration file
-* you can use this as is or modify it if you want a different format
-*
-* return 0 on success
-*
-*******************************************************************************/
-
-int mb_initialize_controller(){
-    mb_load_controller_config();
-    return 0;
-}
-
-/*******************************************************************************
-* int mb_load_controller_config()
-*
-* this provides a basic configuration load routine
-* you can use this as is or modify it if you want a different format
-*
-* return 0 on success
-*
-*******************************************************************************/
+// #include _GNU_SOURCE
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+#include <mb_structs.h>
 
 
-int mb_load_controller_config(){
-    // Get file open
-    FILE* file = fopen(CFG_PATH, "r");
-    if (file == NULL){
-        printf("Error opening pid.cfg\n");
-    }
-    // line read variables
+
+int main(int argc,char* argv[])
+{
+    
+    char CFG_PATH[] = "/Users/michaellevy/Documents/Michigan/Fall 2020/ROB550/MBOT/tests/pid.cfg";
+    FILE* file;
     char *line = NULL;
     size_t len = 0;
     ssize_t nread;
 
-    // parsing variables
+    file = fopen(CFG_PATH, "r");
+    if (file == NULL) {
+        fprintf(stderr, "ERROR: UNABLE TO OPEN CONFIG FILE");
+    }
     char* value_ptr = NULL;
     int delim = '=';
-    char* result = NULL;
-    double value; 
-    int i;
-
-    // Desired Keys for config
     char keys[6][10] = {
         "kp",
         "ki",
@@ -57,24 +31,22 @@ int mb_load_controller_config(){
         "int_lim"
     };
 
-    // Open file
-    file = fopen(CFG_PATH, "r");
-    if (file == NULL) {
-        fprintf(stderr, "ERROR: UNABLE TO OPEN CONFIG FILE");
-    }
-    
-    // Go through all lines in file
+    char* result = NULL;
+    double value; 
+    int i;
     while ((nread = getline(&line, &len, file)) != -1) {
         // pass on the comments or empty lines
         if(nread == 1 || line[0] == '#') {
             continue;
         }
-        
-        // lower case all values
+        // lower case the line 
         for(i = 0; i < (int)nread; i++) {
             line[i] = tolower(line[i]);
         }
-
+        // print the line
+        printf("LINE LENGTH: %zu:\n", nread);
+        fwrite(line, nread, 1, stdout);
+        
         // find the where the delimiter is
         value_ptr = strchr(line, delim);
 
@@ -123,7 +95,6 @@ int mb_load_controller_config(){
                 break;
             }
         }
-        // cleanup before next iteration
         value_ptr = NULL;
         result = NULL; 
     }
@@ -131,34 +102,5 @@ int mb_load_controller_config(){
     free(line);
     free(result);
     fclose(file);
-    return 0;
-}
-
-/*******************************************************************************
-* int mb_controller_update()
-* 
-* TODO: Write your PID controller here
-* take inputs from the global mb_state
-* write outputs to the global mb_state
-*
-* return 0 on success
-*
-*******************************************************************************/
-
-int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
-    return 0;
-}
-
-
-/*******************************************************************************
-* int mb_destroy_controller()
-* 
-* TODO: Free all resources associated with your controller
-*
-* return 0 on success
-*
-*******************************************************************************/
-
-int mb_destroy_controller(){
     return 0;
 }
