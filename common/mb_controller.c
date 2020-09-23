@@ -1,5 +1,8 @@
 #include "../mobilebot/mobilebot.h"
-
+/*
+* @file mb_controller.c
+// @author - Michael Levy + ROB 550 Template
+*/
 /*******************************************************************************
 * int mb_initialize()
 *
@@ -27,23 +30,15 @@ int mb_initialize_controller(){
 
 
 int mb_load_controller_config(){
+    // Get file open
     FILE* file = fopen(CFG_PATH, "r");
     if (file == NULL){
         printf("Error opening pid.cfg\n");
     }
+    
+    fscanf(file, "%f %f %f %f")
 
-/******
-*
-*   Example of loading a line from .cfg file:
-*
-*    fscanf(file, "%f %f %f %f", 
-*        &pid_params.kp,
-*        &pid_params.ki,
-*        &pid_params.kd,
-*        &pid_params.dFilterHz
-*        );
-*
-******/
+    if(getline())
 
     fclose(file);
     return 0;

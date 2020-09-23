@@ -89,10 +89,11 @@ int main(int argc, char *argv[]){
     printf("RUNNING.....\n");
 
 	// Setup print statements
-	printf("\nRIGHT VEL.\n");
-	printf("LEFT VEL. |");
-	printf("DUTY CYCLE |");
-	printf(" \n");
+	printf("\nRIGHT VEL. |");
+	printf("LEFT VEL.    |");
+	printf("DUTY CYCLE   |");
+    printf("TIME         |");
+	printf("\n");
     // call motor test
     test_speed(duty, dtime_s);
 	
@@ -116,30 +117,29 @@ int main(int argc, char *argv[]){
 
 void test_speed(float duty, float dtime_s){
     // Given a change in time measure the velocity of each wheel
-
-    int v_r, v_l;
+    double v_r, v_l;
     // check duty cycle given
     if(abs(duty) > 1) {
         fprintf(stderr,"ERROR: Incorrect Duty Cycle given!\n");
-        return -1;
+        return;
     }
     
     // Check if time is strictly positive
     if(dtime_s <= 0) {
         fprintf(stderr,"ERROR: delta-t is not strictly positive\n");
-        return -1;
+        return;
     }
     
     // Reset encoders to zero
     if(rc_encoder_write(LEFT_MOTOR, 0) != 0 || rc_encoder_write(RIGHT_MOTOR, 0) != 0) {
         fprintf(stderr, "ERROR: COULD NOT RESET ENCODER VALUES");
-        return -1;
+        return;
     }
     
     // Start motors
     if(rc_motor_set(LEFT_MOTOR, duty) != 0 || rc_motor_set(RIGHT_MOTOR, duty) != 0) {
         fprintf(stderr, "ERROR: COULD NOT Start Motors");
-        return -1;
+        return;
     }
 
     // sleep for desired time
@@ -148,10 +148,11 @@ void test_speed(float duty, float dtime_s){
     // turn off motors
     if(rc_motor_set(LEFT_MOTOR, 0) != 0 || rc_motor_set(RIGHT_MOTOR, 0) != 0) {
         fprintf(stderr, "ERROR: COULD NOT Start Motors");
-        return -1;
+        return;
     }
     // calculate velocities
-    v_r = enc2meters * rc_encoder_read(RIGHT_MOTOR) / dtime_s
-    v_l = enc2meters * rc_encoder_read(LEFT_MOTOR) / dtime_s
-    printf("%10d | %10d | %10d", v_r, v_l, duty)
+    v_r = enc2meters * rc_encoder_read(RIGHT_MOTOR) / dtime_s;
+    v_l = enc2meters * rc_encoder_read(LEFT_MOTOR) / dtime_s;
+    printf("%10f | %10f | %10f | %10f\n", v_r, v_l, duty, dtime_s);
+
 }

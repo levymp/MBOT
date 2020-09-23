@@ -29,8 +29,6 @@ enum speed {
 	STP = 0
 };
 
-
-
 // Global Variables for encoders
 int avg_rotation = 1562;
 double one_rotation = M_PI * 0.084; // one rotation in M
