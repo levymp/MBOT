@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "/Users/michaellevy/Documents/Michigan/Fall 2020/ROB550/MBOT/common/mb_structs.h"
+// #include "/Users/michaellevy/Documents/Michigan/Fall 2020/ROB550/MBOT/common/mb_structs.h"
+
 
 
 int main(int argc,char* argv[])
