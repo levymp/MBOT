@@ -3,14 +3,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-// #include "/Users/michaellevy/Documents/Michigan/Fall 2020/ROB550/MBOT/common/mb_structs.h"
+#include <mb_structs.h>
 
 
 
 int main(int argc,char* argv[])
 {
     
-    char CFG_PATH[] = "/home/levymp/Documents/MBOT/tests/pid.cfg";
+    char CFG_PATH[] = "/Users/michaellevy/Documents/Michigan/Fall 2020/ROB550/MBOT/tests/pid.cfg";
     FILE* file;
     char *line = NULL;
     size_t len = 0;
@@ -35,10 +35,6 @@ int main(int argc,char* argv[])
     double value; 
     int i;
     while ((nread = getline(&line, &len, file)) != -1) {
-        // print the line
-        printf("Retrieved line of length %zu:\n", nread);
-        fwrite(line, nread, 1, stdout);
-
         // pass on the comments or empty lines
         if(nread == 1 || line[0] == '#') {
             continue;
@@ -47,9 +43,13 @@ int main(int argc,char* argv[])
         for(i = 0; i < (int)nread; i++) {
             line[i] = tolower(line[i]);
         }
+        // print the line
+        printf("LINE LENGTH: %zu:\n", nread);
         fwrite(line, nread, 1, stdout);
+        
         // find the where the delimiter is
         value_ptr = strchr(line, delim);
+
         // march value_ptr to actual value
         // + 2 if space after delimiter
         // + 1 if value is right after delimiter
@@ -61,30 +61,32 @@ int main(int argc,char* argv[])
 
         // assign float to value (assuming only \0 after value and no addition comments)
         value = atof(value_ptr);
-        for(i = 0; i < 6; i++) {
+        
+        // Check line against keys and if a key is found assign its value
+        for(i = 0; i < (int)sizeof(keys)/sizeof(keys[0]); i++) {
             result = strstr(line, keys[i]);
             // Check if a key was found
             if(result != NULL) {
-                // Write the value to struct
+                // Write the value to struct base on i (index of keys array)
+                // TO ADD additional parameters just add it to keys array and add another case
                 switch(i) {
                     case 0:
-                        // &pid_parameters.kp = value;
-                        fprintf(stdout, "%f", value);
+                        &pid_parameters.kp = value;
                         break;
                     case 1:
-                        // &pid_parameters.ki = value;
+                        &pid_parameters.ki = value;
                         break;
                     case 2:
-                        // &pid_parameters.kd = value;
+                        &pid_parameters.kd = value;
                         break;
                     case 3:
-                        // &pid_parameters.dFilterHz = value;
+                        &pid_parameters.dFilterHz = value;
                         break;
                     case 4:
-                        // &pid_parameters.out_lim = value;
+                        &pid_parameters.out_lim = value;
                         break;
                     case 5:
-                        // &pid_parameters.int_lim = value;
+                        &pid_parameters.int_lim = value;
                         break;    
                     default:
                         fprintf(stderr, "ERROR: UNEXPECTED VALUE FOUND WHEN READING CONFIG");
@@ -96,9 +98,9 @@ int main(int argc,char* argv[])
         value_ptr = NULL;
         result = NULL; 
     }
+    // Clean up and exit
     free(line);
     free(result);
-    // free(keys);
     fclose(file);
-    exit(EXIT_SUCCESS);
+    return 0;
 }
