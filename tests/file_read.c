@@ -69,6 +69,7 @@ int main(int argc,char* argv[])
                 switch(i) {
                     case 0:
                         // &pid_parameters.kp = value;
+                        fprintf(stdout, "%f", value);
                         break;
                     case 1:
                         // &pid_parameters.ki = value;
@@ -97,7 +98,7 @@ int main(int argc,char* argv[])
     }
     free(line);
     free(result);
-    free(keys);
+    // free(keys);
     fclose(file);
     exit(EXIT_SUCCESS);
 }
