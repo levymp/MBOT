@@ -1,4 +1,9 @@
+#define _GNU_SOURCE
 #include "../mobilebot/mobilebot.h"
+#include <stdio.h>
+#include <string.h>
+#include <ctype.h>
+
 /*
 * @file mb_controller.c
 // @author - Michael Levy + ROB 550 Template
@@ -14,7 +19,10 @@
 *******************************************************************************/
 
 int mb_initialize_controller(){
-    mb_load_controller_config();
+    // initialize left and right parameters
+    if(mb_load_controller_config(&r_pid_params) || mb_load_controller_config(&l_pid_params)) {
+        return -1;
+    }
     return 0;
 }
 
@@ -29,7 +37,7 @@ int mb_initialize_controller(){
 *******************************************************************************/
 
 
-int mb_load_controller_config(){
+int mb_load_controller_config(pid_parameters_t* pid_params){
     // Get file open
     FILE* file = fopen(CFG_PATH, "r");
     if (file == NULL){
@@ -46,6 +54,7 @@ int mb_load_controller_config(){
     char* result = NULL;
     double value; 
     int i;
+    int count = 0;
 
     // Desired Keys for config
     char keys[6][10] = {
@@ -56,11 +65,13 @@ int mb_load_controller_config(){
         "out_lim", 
         "int_lim"
     };
-
+    // length of keys
+    int keys_length =(int)sizeof(keys)/sizeof(keys[0]);
     // Open file
     file = fopen(CFG_PATH, "r");
     if (file == NULL) {
         fprintf(stderr, "ERROR: UNABLE TO OPEN CONFIG FILE");
+        return -1;
     }
     
     // Go through all lines in file
@@ -91,7 +102,7 @@ int mb_load_controller_config(){
         value = atof(value_ptr);
         
         // Check line against keys and if a key is found assign its value
-        for(i = 0; i < (int)sizeof(keys)/sizeof(keys[0]); i++) {
+        for(i = 0; i < keys_length; i++) {
             result = strstr(line, keys[i]);
             // Check if a key was found
             if(result != NULL) {
@@ -99,22 +110,28 @@ int mb_load_controller_config(){
                 // TO ADD additional parameters just add it to keys array and add another case
                 switch(i) {
                     case 0:
-                        &pid_parameters.kp = value;
+                        pid_params->kp = value;
+                        count++;
                         break;
                     case 1:
-                        &pid_parameters.ki = value;
+                        pid_params->ki = value;
+                        count++;
                         break;
                     case 2:
-                        &pid_parameters.kd = value;
+                        pid_params->kd = value;
+                        count++;
                         break;
                     case 3:
-                        &pid_parameters.dFilterHz = value;
+                        pid_params->dFilterHz = value;
+                        count++;
                         break;
                     case 4:
-                        &pid_parameters.out_lim = value;
+                        pid_params->out_lim = value;
+                        count++;
                         break;
                     case 5:
-                        &pid_parameters.int_lim = value;
+                        pid_params->int_lim = value;
+                        count++;
                         break;    
                     default:
                         fprintf(stderr, "ERROR: UNEXPECTED VALUE FOUND WHEN READING CONFIG");
@@ -126,6 +143,11 @@ int mb_load_controller_config(){
         // cleanup before next iteration
         value_ptr = NULL;
         result = NULL; 
+    }
+    // Final Check 
+    if(count != keys_length) {
+            fprintf(stderr, "ERROR: DID NOT WRITE ALL VALUES FROM CONFIG FILE TO PID PARAMS");
+            return -1;
     }
     // Clean up and exit
     free(line);
