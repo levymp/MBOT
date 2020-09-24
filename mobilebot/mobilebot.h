@@ -14,6 +14,7 @@
 #include <rc/cpu.h>
 #include <rc/dsm.h>
 #include <rc/encoder.h>
+#include <rc/encoder_eqep.h>
 #include <rc/gpio.h>
 #include <rc/i2c.h>
 #include <rc/led.h>
@@ -53,7 +54,7 @@ mb_odometry_t mb_odometry;
 int64_t now;
 int64_t time_offset;
 int time_offset_initialized;
-
+float M_PI;
 // functions
 void mobilebot_controller();
 void update_now();

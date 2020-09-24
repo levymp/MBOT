@@ -67,6 +67,7 @@ int main(){
 	mb_initialize_controller();
 
 	printf("initializing motors...\n");
+    mb_motor_init();
 #if defined(MRC_VERSION_1v3) || defined(MRC_VERSION_2v1)
 	mb_motor_init();
     mb_motor_brake(1);
@@ -82,9 +83,9 @@ int main(){
 #endif
 
 	printf("initializing odometry...\n");
-    rc_encoder_init();
-    rc_encoder_write(1, 0);
-    rc_encoder_write(2, 0);
+    rc_encoder_eqep_init();
+    rc_encoder_eqep_write(1, 0);
+    rc_encoder_eqep_write(2, 0);
 	mb_initialize_odometry(&mb_odometry, 0.0,0.0,0.0);
 
 	printf("attaching imu interupt...\n");
@@ -116,7 +117,8 @@ int main(){
 #if defined(BEAGLEBONE_BLUE)
     rc_motor_cleanup();
 #endif
-    rc_encoder_cleanup();
+    rc_encoder_eqep_cleanup();
+    mb_destroy_controller();
     rc_remove_pid_file();
 	return 0;
 }
@@ -145,12 +147,16 @@ void read_mb_sensors(){
     }
 
     // Read encoders    
-    mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
-    mb_state.right_encoder_delta = rc_encoder_read(RIGHT_MOTOR);
+    mb_state.left_encoder_delta = LEFT_ENCODER_POL*rc_encoder_eqep_read(LEFT_ENCODER);
+    mb_state.right_encoder_delta = RIGHT_ENCODER_POL*rc_encoder_eqep_read(RIGHT_ENCODER);
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
-    rc_encoder_write(LEFT_MOTOR,0);
-    rc_encoder_write(RIGHT_MOTOR,0);
+    rc_encoder_eqep_write(LEFT_ENCODER,0);
+    rc_encoder_eqep_write(RIGHT_ENCODER,0);
+
+    float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
+    mb_state.left_velocity = (mb_state.left_encoder_delta * enc2meters) / DT;
+    mb_state.right_velocity = (mb_state.right_encoder_delta * enc2meters) / DT;
 
     //unlock state mutex
     pthread_mutex_unlock(&state_mutex);
@@ -209,6 +215,11 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
+    
+    mb_controller_update(&mb_state, &mb_setpoints);
+    mb_motor_set(LEFT_MOTOR, mb_state.left_cmd);
+    mb_motor_set(RIGHT_MOTOR, mb_state.right_cmd);
+
     publish_mb_msgs();
 
 }
@@ -248,6 +259,12 @@ void timesync_handler(const lcm_recv_buf_t * rbuf, const char *channel,
 *******************************************************************************/
 void motor_command_handler(const lcm_recv_buf_t *rbuf, const char *channel,
                           const mbot_motor_command_t *msg, void *user){
+
+    // Reset controller when setpoints change
+    if(msg->trans_v != mb_setpoints.fwd_velocity || msg->angular_v != mb_setpoints.turn_velocity){
+        mb_destroy_controller();
+        mb_initialize_controller();
+    }
 	mb_setpoints.fwd_velocity = msg->trans_v;
 	mb_setpoints.turn_velocity = msg->angular_v;
 
@@ -354,7 +371,7 @@ void* printf_loop(void* ptr){
 		// check if this is the first time since being paused
 		if(new_state==RUNNING && last_state!=RUNNING){
 			printf("\nRUNNING...\n");
-			printf("           SENSORS           |           ODOMETRY          |     SETPOINTS     |");
+			printf("           SENSORS           |           ODOMETRY          |     SETPOINTS     |      VELOCITY     |      COMMANDS     |");
 			printf("\n");
 			printf("  IMU θ  |");
 			printf("  L_ENC  |");
@@ -364,7 +381,10 @@ void* printf_loop(void* ptr){
 			printf("    θ    |");
 			printf("   FWD   |");
             printf("   TURN  |");
-
+            printf("   LEFT  |");
+            printf("   RIGHT |");
+            printf("   LEFT  |");
+            printf("   RIGHT |");
 			printf("\n");
 		}
 		else if(new_state==PAUSED && last_state!=PAUSED){
@@ -383,7 +403,10 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.theta);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
             printf("%7.3f  |", mb_setpoints.turn_velocity);
-
+            printf("%7.3f  |", mb_state.left_velocity);
+            printf("%7.3f  |", mb_state.right_velocity);
+            printf("%7.3f  |", mb_state.left_cmd);
+            printf("%7.3f  |", mb_state.right_cmd);
 			fflush(stdout);
 		}
 		rc_nanosleep(1E9 / PRINTF_HZ);

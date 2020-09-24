@@ -60,4 +60,9 @@ struct pid_parameters {
     float out_lim;
     float int_lim;
 };
+
+typedef struct filter_parameters filter_parameters_t;
+struct filter_parameters {
+    float time_constant;
+};
 #endif

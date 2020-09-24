@@ -35,6 +35,7 @@ int mb_motor_init(){
 *******************************************************************************/
 int mb_motor_init_freq(int pwm_freq_hz){
     init_flag = 1;
+    rc_motor_init_freq(pwm_freq_hz);
     return 0;
 }
 
@@ -45,6 +46,7 @@ int mb_motor_init_freq(int pwm_freq_hz){
 *******************************************************************************/
 int mb_motor_cleanup(){
     if(!init_flag) return 0;
+    rc_motor_cleanup();
     return 0;
 }
 
@@ -60,6 +62,9 @@ int mb_motor_brake(int brake_en){
     if(unlikely(!init_flag)){
         fprintf(stderr,"ERROR: trying to enable brake before motors have been initialized\n");
         return -1;
+    }
+    if (brake_en){
+        rc_motor_brake(0);
     }
    return 0
 }
@@ -77,7 +82,7 @@ int mb_motor_disable(){
         fprintf(stderr,"ERROR: trying to disable motors before motors have been initialized\n");
         return -1;
     }
-
+    rc_motor_set(0,0);
     return 0;
 }
 
@@ -96,6 +101,12 @@ int mb_motor_set(int motor, double duty){
         fprintf(stderr,"ERROR: trying to rc_set_motor_all before they have been initialized\n");
         return -1;
     }
+    if (motor == LEFT_MOTOR){
+        rc_motor_set(LEFT_MOTOR, duty);
+    }
+    else{
+        rc_motor_set(RIGHT_MOTOR, duty);
+    }
     return 0;
 }
 
@@ -110,7 +121,8 @@ int mb_motor_set_all(double duty){
         printf("ERROR: trying to rc_set_motor_all before they have been initialized\n");
         return -1;
     }
-
+    mb_motor_set(LEFT_MOTOR, duty);
+    mb_motor_set(RIGHT_MOTOR, duty);
     return 0;
 }
 
