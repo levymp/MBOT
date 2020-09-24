@@ -9,6 +9,7 @@
 * 
 *******************************************************************************/
 #include "mobilebot.h"
+float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
 
 /*******************************************************************************
 * int main() 
@@ -118,6 +119,7 @@ int main(){
     rc_motor_cleanup();
 #endif
     rc_encoder_eqep_cleanup();
+    mb_motor_cleanup();
     mb_destroy_controller();
     rc_remove_pid_file();
 	return 0;
@@ -151,13 +153,12 @@ void read_mb_sensors(){
     mb_state.right_encoder_delta = RIGHT_ENCODER_POL*rc_encoder_eqep_read(RIGHT_ENCODER);
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
+
+    mb_state.left_velocity = (mb_state.left_encoder_delta * enc2meters)/DT;
+    mb_state.right_velocity = (mb_state.right_encoder_delta * enc2meters)/DT;
+    
     rc_encoder_eqep_write(LEFT_ENCODER,0);
     rc_encoder_eqep_write(RIGHT_ENCODER,0);
-
-    float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
-    mb_state.left_velocity = (mb_state.left_encoder_delta * enc2meters) / DT;
-    mb_state.right_velocity = (mb_state.right_encoder_delta * enc2meters) / DT;
-
     //unlock state mutex
     pthread_mutex_unlock(&state_mutex);
 

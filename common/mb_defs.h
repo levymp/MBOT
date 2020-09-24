@@ -33,8 +33,8 @@
 #define MAX_TURN_VEL            2.5   // maximum turning speed (rad/s)
 
 // These rates are set to defaults - can be changed
-#define SAMPLE_RATE_HZ          10   // main filter and control loop speed
-#define DT                      0.1  // 1/sample_rate
+#define SAMPLE_RATE_HZ          50   // main filter and control loop speed
+#define DT                      0.02  // 1/sample_rate
 #define PRINTF_HZ               10    // rate of print loop
 #define RC_CTL_HZ               25   // main filter and control loop speed
 #define LCM_HZ                  100    // rate of LCM subscribe

@@ -46,6 +46,7 @@ int mb_motor_init_freq(int pwm_freq_hz){
 *******************************************************************************/
 int mb_motor_cleanup(){
     if(!init_flag) return 0;
+    mb_motor_disable();
     rc_motor_cleanup();
     return 0;
 }
