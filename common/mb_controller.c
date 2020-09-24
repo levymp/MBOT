@@ -47,11 +47,12 @@ int mb_initialize_controller(){
         return -1;
     }
     // soft start
-    if(rc_filter_enable_soft_start(&r_wheel_speed_pid, DT*2) || rc_filter_enable_soft_start(&l_wheel_speed_pid, DT*2))
-    {
-        fprintf(stderr, "ERROR: FAILED TO SOFT START PID FILTER");
-        return -1;
-    }
+    // if(rc_filter_enable_soft_start(&r_wheel_speed_pid, DT*2) || rc_filter_enable_soft_start(&l_wheel_speed_pid, DT*2))
+    // {
+    //     fprintf(stderr, "ERROR: FAILED TO SOFT START PID FILTER");
+    //     return -1;
+    // }
+
     return 0;
 }
 
@@ -199,12 +200,13 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
     // calculate error
     float r_error, l_error;
-    r_error = mb_state -> right_velocity - mb_setpoints -> fwd_velocity; 
-    l_error = mb_state -> left_velocity - mb_setpoints -> fwd_velocity; 
+    r_error = mb_setpoints -> fwd_velocity - mb_state -> right_velocity; 
+    l_error = mb_setpoints -> fwd_velocity - mb_state -> left_velocity ; 
     
     // march values
-    rc_filter_march(&l_wheel_speed_pid, l_error);
-    rc_filter_march(&r_wheel_speed_pid, r_error);
+    mb_state -> left_cmd = rc_filter_march(&l_wheel_speed_pid, l_error);
+    mb_state -> right_cmd = rc_filter_march(&r_wheel_speed_pid, r_error);
+
     return 0;
 }
 

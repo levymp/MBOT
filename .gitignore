@@ -21,3 +21,6 @@ bin/
 
 # ignore cache files
 /documentation/__pycache__
+
+# ignore cached files
+/python/lcmtypes/*.pyc
