@@ -89,16 +89,16 @@ void test_speed(float duty, float dtime_s){
     rc_encoder_eqep_init();
     rc_motor_init();
 
-    int enc_init_left = rc_encoder_eqep_read(LEFT_MOTOR);
-    int enc_init_right = rc_encoder_eqep_read(RIGHT_MOTOR);
+    int enc_init_left = LEFT_ENCODER_POLARITY*rc_encoder_eqep_read(LEFT_MOTOR);
+    int enc_init_right = RIGHT_ENCODER_POLARITY*rc_encoder_eqep_read(RIGHT_MOTOR);
 
-    rc_motor_set(LEFT_MOTOR, duty);
-	rc_motor_set(RIGHT_MOTOR, duty);
+    rc_motor_set(LEFT_MOTOR, LEFT_MOTOR_POLARITY*duty);
+	rc_motor_set(RIGHT_MOTOR, RIGHT_MOTOR_POLARITY*duty);
 
 	rc_nanosleep(dtime_s * 1e9);
 
-	int enc_end_left = rc_encoder_eqep_read(LEFT_MOTOR);
-	int enc_end_right = rc_encoder_eqep_read(RIGHT_MOTOR);
+	int enc_end_left = LEFT_ENCODER_POLARITY*rc_encoder_eqep_read(LEFT_MOTOR);
+	int enc_end_right = RIGHT_ENCODER_POLARITY*rc_encoder_eqep_read(RIGHT_MOTOR);
 
 	rc_motor_set (LEFT_MOTOR, 0);
 	rc_motor_set (RIGHT_MOTOR, 0);

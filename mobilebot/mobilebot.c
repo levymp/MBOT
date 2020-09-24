@@ -10,11 +10,18 @@
 *******************************************************************************/
 #include "mobilebot.h"
 
+#define PI 3.14159265358979323846
+
+float enc2meters = (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
+
 /*******************************************************************************
 * int main() 
 *
 *******************************************************************************/
 int main(){
+
+    // mb_setpoints.fwd_velocity = 0.0;
+    // mb_setpoints.turn_velocity = 0;
 
     rc_led_set(RC_LED_GREEN, LED_OFF);
     rc_led_set(RC_LED_RED, LED_ON);
@@ -73,6 +80,7 @@ int main(){
     mb_motor_set(1,0);
     mb_motor_set(2,0);
 #endif
+    mb_motor_init();
 
 #if defined(BEAGLEBONE_BLUE)
     rc_motor_init_freq(DEFAULT_PWM_FREQ);
@@ -135,7 +143,9 @@ void read_mb_sensors(){
     mb_state.tb_angles[1] = imu_data.dmp_TaitBryan[TB_ROLL_Y];
     mb_state.last_yaw = mb_state.tb_angles[2];
     mb_state.tb_angles[2] = imu_data.dmp_TaitBryan[TB_YAW_Z];
+    mb_state.yaw_delta = mb_angle_diff_radians(mb_state.last_yaw, mb_state.tb_angles[2]);
     mb_state.temp = imu_data.temp;
+    mb_state.gyro_heading_delta = mb_state.gyro[2] * PI / (180.0 * SAMPLE_RATE_HZ);
 
     int i;
     for(i=0;i<3;i++){
@@ -144,11 +154,22 @@ void read_mb_sensors(){
         mb_state.mag[i] = imu_data.mag[i];
     }
 
-    // Read encoders    
-    mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
-    mb_state.right_encoder_delta = rc_encoder_read(RIGHT_MOTOR);
+    // Read encoders
+    mb_state.left_encoder_delta = LEFT_ENCODER_POLARITY*rc_encoder_read(LEFT_MOTOR);
+    mb_state.right_encoder_delta = RIGHT_ENCODER_POLARITY*rc_encoder_read(RIGHT_MOTOR);
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
+
+    mb_state.left_velocity = mb_state.left_encoder_delta * enc2meters / (1/SAMPLE_RATE_HZ);
+    mb_state.right_velocity = mb_state.right_encoder_delta * enc2meters / (1/SAMPLE_RATE_HZ);
+    
+    mb_state.turn_velocity = (mb_state.right_velocity - mb_state.left_velocity) / WHEEL_BASE;
+    mb_state.fwd_velocity =  (mb_state.left_velocity + mb_state.right_velocity) / 2;
+
+    mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * enc2meters;
+    mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * enc2meters;
+    mb_state.distance_delta = (mb_state.left_wheel_distance_delta + mb_state.right_wheel_distance_delta) / 2;
+
     rc_encoder_write(LEFT_MOTOR,0);
     rc_encoder_write(RIGHT_MOTOR,0);
 
@@ -166,7 +187,7 @@ void read_mb_sensors(){
 void publish_mb_msgs(){
     mbot_imu_t imu_msg;
     mbot_encoder_t encoder_msg;
-//  odometry_t odo_msg;
+    odometry_t odo_msg;
 
     //Create IMU LCM Message
     imu_msg.utime = now;
@@ -186,11 +207,14 @@ void publish_mb_msgs(){
     encoder_msg.rightticks = mb_state.right_encoder_total;
 
     //TODO: Create Odometry LCM message
+    odo_msg.x = mb_odometry.x;
+    odo_msg.y = mb_odometry.y;
+    odo_msg.theta = mb_odometry.theta;
 
     //publish IMU & Encoder Data to LCM
     mbot_imu_t_publish(lcm, MBOT_IMU_CHANNEL, &imu_msg);
     mbot_encoder_t_publish(lcm, MBOT_ENCODER_CHANNEL, &encoder_msg);
-//  odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
+    odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
 }
 
 /*******************************************************************************
@@ -209,8 +233,11 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
+    mb_controller_update(&mb_state, &mb_setpoints);
+    mb_motor_set(LEFT_MOTOR, mb_state.left_cmd);
+    mb_motor_set(RIGHT_MOTOR, mb_state.right_cmd);
+    mb_update_odometry(&mb_odometry, &mb_state);
     publish_mb_msgs();
-
 }
 
 
@@ -354,7 +381,8 @@ void* printf_loop(void* ptr){
 		// check if this is the first time since being paused
 		if(new_state==RUNNING && last_state!=RUNNING){
 			printf("\nRUNNING...\n");
-			printf("           SENSORS           |           ODOMETRY          |     SETPOINTS     |");
+			printf("           SENSORS           |           ODOMETRY          |     SETPOINTS     |     VELOCITIES    |"
+                   "     SETPOINTS     |     VELOCITIES    |     COMMANDS      |");
 			printf("\n");
 			printf("  IMU θ  |");
 			printf("  L_ENC  |");
@@ -364,6 +392,14 @@ void* printf_loop(void* ptr){
 			printf("    θ    |");
 			printf("   FWD   |");
             printf("   TURN  |");
+            printf("   FWD   |");
+            printf("   TURN  |");
+            printf("   LEFT  |");
+            printf("   RIGHT |");
+            printf("   LEFT  |");
+            printf("   RIGHT |");
+            printf("   LEFT  |");
+            printf("   RIGHT |");
 
 			printf("\n");
 		}
@@ -383,6 +419,14 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.theta);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
             printf("%7.3f  |", mb_setpoints.turn_velocity);
+            printf("%7.3f  |", mb_state.fwd_velocity);
+            printf("%7.3f  |", mb_state.turn_velocity);
+            printf("%7.3f  |", mb_setpoints.left_velocity);
+            printf("%7.3f  |", mb_setpoints.right_velocity);
+            printf("%7.3f  |", mb_state.left_velocity);
+            printf("%7.3f  |", mb_state.right_velocity);
+            printf("%7.3f  |", mb_state.left_cmd);
+            printf("%7.3f  |", mb_state.right_cmd);
 
 			fflush(stdout);
 		}

@@ -18,9 +18,18 @@
 #define RIGHT_MOTOR             1     // id of right motor
 
 // TODO: Add convienient defines to define things like motor and encoder polarity here
+#define LEFT_MOTOR_POLARITY     1
+#define RIGHT_MOTOR_POLARITY    -1
+#define LEFT_ENCODER_POLARITY   -1
+#define RIGHT_ENCODER_POLARITY  1
+
+#define MAX_DUTY                1.0
+#define MIN_DUTY                -1.0
+
+#define DELTA_THETA_THRESHOLD   0.2
 
 // TODO: Fill in physical propeties of robot
-#define GEAR_RATIO              78.125 // gear ratio of motor
+#define GEAR_RATIO              78.0 // gear ratio of motor
 #define ENCODER_RES             20.0 // encoder counts per motor shaft revolution
 #define WHEEL_DIAMETER          0.084 // diameter of wheel in meters
 #define WHEEL_BASE              0.2  // wheel separation distance in meters
@@ -28,7 +37,7 @@
 #define MAX_TURN_VEL            2.5   // maximum turning speed (rad/s)
 
 // These rates are set to defaults - can be changed
-#define SAMPLE_RATE_HZ          50   // main filter and control loop speed
+#define SAMPLE_RATE_HZ          50.0   // main filter and control loop speed
 #define DT                      0.02  // 1/sample_rate
 #define PRINTF_HZ               10    // rate of print loop
 #define RC_CTL_HZ               25   // main filter and control loop speed

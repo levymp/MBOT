@@ -33,6 +33,12 @@ struct mb_state{
     float   right_cmd; //right wheel command [-1..1]
 
     //TODO: Add more variables to this state as needed
+    float yaw_delta; // change of heading sine last reading
+    float gyro_heading_delta; // change of heading from gyro since last reading
+    float picked_delta; //pick one delta from yaw_delta and gyro_heading_delta
+    float left_wheel_distance_delta;
+    float right_wheel_distance_delta;
+    float distance_delta;
 };
 
 typedef struct mb_setpoints mb_setpoints_t;
@@ -40,6 +46,8 @@ struct mb_setpoints{
 
     float fwd_velocity; // fwd velocity in m/s
     float turn_velocity; // turn velocity in rad/s
+    float left_velocity;
+    float right_velocity;
     int manual_ctl;
 };
 
@@ -59,5 +67,7 @@ struct pid_parameters {
     float dFilterHz;
     float out_lim;
     float int_lim;
+    float Tf;
+    float dt;
 };
 #endif

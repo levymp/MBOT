@@ -3,7 +3,7 @@
 
 
 #include "../mobilebot/mobilebot.h"
-#define CFG_PATH "/home/debian/mobilebot-w20/bin/pid.cfg"
+#define CFG_PATH "/home/debian/MBOT/bin/pid.cfg"
 
 int mb_initialize_controller();
 int mb_load_controller_config();
@@ -24,6 +24,12 @@ int mb_destroy_controller();
 * pid_parameters_t left_wheel_speed_params;
 * filter_parameters_t fwd_vel_sp_lpf_params;
 ************/
+
+pid_parameters_t pid_para_left;
+pid_parameters_t pid_para_right;
+
+rc_filter_t left_wheel_speed_pid;
+rc_filter_t right_wheel_speed_pid;
 
 #endif
 
