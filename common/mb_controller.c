@@ -8,6 +8,12 @@
 * @file mb_controller.c
 // @author - Michael Levy + ROB 550 Template
 */
+
+
+// Declare functions 
+
+
+
 /*******************************************************************************
 * int mb_initialize()
 *
@@ -21,6 +27,29 @@
 int mb_initialize_controller(){
     // initialize left and right parameters
     if(mb_load_controller_config(&r_pid_params) || mb_load_controller_config(&l_pid_params)) {
+        fprintf(stderr, "ERROR: FAILED TO LOAD CONFIG");
+        return -1;
+    }
+
+    // left/right motors have config loaded
+    // now initialize pid controller for both wheels
+    if(rc_filter_pid(&r_wheel_speed_pid, r_pid_params.kp, r_pid_params.ki, r_pid_params.kd, 4 * DT, DT) ||
+            rc_filter_pid(&l_wheel_speed_pid, l_pid_params.kp, l_pid_params.ki, l_pid_params.kd, 4 * DT, DT)) 
+    {
+        fprintf(stderr, "ERRROR: FAILED TO CONFIGURE PID");
+        return -1;
+    }
+    // set saturation values
+    if(rc_filter_enable_saturation(&r_wheel_speed_pid, r_pid_params.out_lim, r_pid_params.int_lim) ||
+            rc_filter_enable_saturation(&l_wheel_speed_pid, l_pid_params.out_lim, l_pid_params.int_lim))
+    {
+        fprintf(stderr, "ERROR: FAILED TO ENABLE SATURATION VALUES");
+        return -1;
+    }
+    // soft start
+    if(rc_filter_enable_soft_start(&r_wheel_speed_pid, DT*2) || rc_filter_enable_soft_start(&l_wheel_speed_pid, DT*2))
+    {
+        fprintf(stderr, "ERROR: FAILED TO SOFT START PID FILTER");
         return -1;
     }
     return 0;
@@ -168,6 +197,14 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
+    // calculate error
+    float r_error, l_error;
+    r_error = mb_state -> right_velocity - mb_setpoints -> fwd_velocity; 
+    l_error = mb_state -> left_velocity - mb_setpoints -> fwd_velocity; 
+    
+    // march values
+    rc_filter_march(&l_wheel_speed_pid, l_error);
+    rc_filter_march(&r_wheel_speed_pid, r_error);
     return 0;
 }
 
@@ -182,5 +219,10 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 *******************************************************************************/
 
 int mb_destroy_controller(){
+    if(rc_filter_free(&r_wheel_speed_pid) || rc_filter_free(&l_wheel_speed_pid)) {
+        fprintf(stderr, "ERROR: FAILED TO FREE FILTERS");
+        return -1;
+    }
+    
     return 0;
 }

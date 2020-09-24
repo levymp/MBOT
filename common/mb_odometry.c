@@ -19,6 +19,8 @@
 *
 *******************************************************************************/
 void mb_initialize_odometry(mb_odometry_t* mb_odometry, float x, float y, float theta){
+    
+
 }
 
 
