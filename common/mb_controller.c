@@ -75,6 +75,14 @@ int mb_load_controller_config(){
         DT);
     rc_filter_enable_saturation(&pid_filt_r, -1, 1);
 
+    rc_filter_first_order_lowpass(&lp_filt_l,
+        DT,
+        .1)  
+
+    rc_filter_first_order_lowpass(&lp_filt_r,
+        DT,
+        .1)   
+
     fclose(file);
     return 0;
 }
@@ -84,6 +92,8 @@ int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoint
     mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
     rc_filter_reset(&pid_filt_l);
     rc_filter_reset(&pid_filt_r);
+    rc_filter_reset(&lp_filt_l);
+    rc_filter_reset(&lp_filt_r);
     
     return 0;
 }
@@ -101,8 +111,11 @@ int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoint
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 
-    mb_setpoints->left_velocity = (2 * mb_setpoints->fwd_velocity - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
-    mb_setpoints->right_velocity = (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    //mb_setpoints->left_velocity = (2 * mb_setpoints->fwd_velocity - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    //mb_setpoints->right_velocity = (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+
+    mb_setpoints->left_velocity = rc_filter_march(&lp_filt_r, (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2);
+    mb_setpoints->right_velocity = rc_filter_march(&lp_filt_l, (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2);
 
     if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
         mb_controller_filter_reset(mb_state, mb_setpoints);
@@ -129,5 +142,7 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 int mb_destroy_controller(){
     rc_filter_free(&pid_filt_l);
     rc_filter_free(&pid_filt_r);
+    rc_filter_free(&lp_filt_l);
+    rc_filter_free(&lp_filt_r);
     return 0;
 }
