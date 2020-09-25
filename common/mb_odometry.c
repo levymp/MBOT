@@ -19,6 +19,9 @@
 *
 *******************************************************************************/
 void mb_initialize_odometry(mb_odometry_t* mb_odometry, float x, float y, float theta){
+    mb_odometry->x = x;
+    mb_odometry->y = y;
+    mb_odometry->theta = theta;
 }
 
 
@@ -30,6 +33,17 @@ void mb_initialize_odometry(mb_odometry_t* mb_odometry, float x, float y, float 
 *
 *******************************************************************************/
 void mb_update_odometry(mb_odometry_t* mb_odometry, mb_state_t* mb_state){
+    float diff = mb_state->yaw_delta - mb_state->gyro_heading_delta;
+    
+    if (abs(diff) > 0.1 && (mb_state->left_velocity != 0 || mb_state->right_velocity != 0)) {
+        mb_state->picked_delta = mb_state->gyro_heading_delta;
+    } else {
+        mb_state->picked_delta = mb_state->yaw_delta;
+    }
+
+    mb_odometry->x += mb_state->distance_delta * cos(mb_clamp_radians(mb_odometry->theta + mb_state->picked_delta/2));
+    mb_odometry->y += mb_state->distance_delta * sin(mb_clamp_radians(mb_odometry->theta + mb_state->picked_delta/2));
+    mb_odometry->theta = mb_clamp_radians(mb_odometry->theta + mb_state->picked_delta);
 }
 
 
