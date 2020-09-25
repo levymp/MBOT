@@ -77,11 +77,11 @@ int mb_load_controller_config(){
 
     rc_filter_first_order_lowpass(&lp_filt_l,
         DT,
-        .1)  
+        .1);  
 
     rc_filter_first_order_lowpass(&lp_filt_r,
         DT,
-        .1)   
+        .1);   
 
     fclose(file);
     return 0;
