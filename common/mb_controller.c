@@ -111,11 +111,11 @@ int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoint
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 
-    //mb_setpoints->left_velocity = (2 * mb_setpoints->fwd_velocity - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
-    //mb_setpoints->right_velocity = (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    mb_setpoints->left_velocity = (2 * mb_setpoints->fwd_velocity - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    mb_setpoints->right_velocity = (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
 
-    mb_setpoints->left_velocity = (2 * rc_filter_march(&lp_filt_r, mb_setpoints->fwd_velocity) - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
-    mb_setpoints->right_velocity = (2 * rc_filter_march(&lp_filt_l, mb_setpoints->fwd_velocity) + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    //mb_setpoints->left_velocity = (2 * rc_filter_march(&lp_filt_r, mb_setpoints->fwd_velocity) - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    //mb_setpoints->right_velocity = (2 * rc_filter_march(&lp_filt_l, mb_setpoints->fwd_velocity) + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
 
     if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
         mb_controller_filter_reset(mb_state, mb_setpoints);
