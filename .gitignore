@@ -24,3 +24,5 @@ bin/
 
 # ignore cached files
 /python/lcmtypes/*.pyc
+# ignore lcm types
+/lcmtypes
