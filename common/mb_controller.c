@@ -79,6 +79,15 @@ int mb_load_controller_config(){
     return 0;
 }
 
+int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
+    mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
+    rc_filter_reset(&pid_filt_l);
+    rc_filter_reset(&pid_filt_r);
+    mb_state->left_cmd = l_wheel_speed_params.FF_term*mb_setpoints->fwd_velocity;
+    mb_state->right_cmd = r_wheel_speed_params.FF_term*mb_setpoints->fwd_velocity;
+    return 0;
+}
+
 /*******************************************************************************
 * int mb_controller_update()
 * 
@@ -101,14 +110,6 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     return 0;
 }
 
-int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
-    mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
-    rc_filter_reset(&pid_filt_l);
-    rc_filter_reset(&pid_filt_r);
-    mb_state->left_cmd = l_wheel_speed_params.FF_term*mb_setpoints->fwd_velocity;
-    mb_state->right_cmd = r_wheel_speed_params.FF_term*mb_setpoints->fwd_velocity;
-    return 0;
-}
 
 /*******************************************************************************
 * int mb_destroy_controller()
