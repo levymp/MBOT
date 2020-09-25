@@ -400,7 +400,7 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.y);
 			printf("%7.3f  |", mb_odometry.theta);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
-            printf("%7.4f  |\n", mb_setpoints.turn_velocity);
+            printf("%7.4f  |", mb_setpoints.turn_velocity);
 
 			fflush(stdout);
 		}
