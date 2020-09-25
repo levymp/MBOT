@@ -148,7 +148,7 @@ void read_mb_sensors(){
 
     // Read encoders    
     mb_state.left_encoder_delta = rc_encoder_read(LEFT_MOTOR);
-    mb_state.right_encoder_delta = rc_encoder_read(RIGHT_MOTOR);
+    mb_state.right_encoder_delta = -rc_encoder_read(RIGHT_MOTOR);
     mb_state.left_velocity = ((float) mb_state.left_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT);
     mb_state.right_velocity = ((float) mb_state.right_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT);
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
