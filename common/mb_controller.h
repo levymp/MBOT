@@ -26,6 +26,9 @@ int mb_destroy_controller();
 ************/
 rc_filter_t pid_filt_l;
 rc_filter_t pid_filt_r;
+rc_filter_t lp_filt_l;
+rc_filter_t lp_filt_r;
+
 pid_parameters_t l_wheel_speed_params;
 pid_parameters_t r_wheel_speed_params;
 
