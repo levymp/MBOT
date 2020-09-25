@@ -137,7 +137,9 @@ void read_mb_sensors(){
     mb_state.tb_angles[1] = imu_data.dmp_TaitBryan[TB_ROLL_Y];
     mb_state.last_yaw = mb_state.tb_angles[2];
     mb_state.tb_angles[2] = imu_data.dmp_TaitBryan[TB_YAW_Z];
+    mb_state.yaw_delta = mb_angle_diff_radians(mb_state.last_yaw, mb_state.tb_angles[2]);
     mb_state.temp = imu_data.temp;
+    mb_state.gyro_heading_delta = mb_state.gyro[2] * PI / (180.0 * SAMPLE_RATE_HZ);
 
     int i;
     for(i=0;i<3;i++){
@@ -155,6 +157,14 @@ void read_mb_sensors(){
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
     rc_encoder_write(LEFT_MOTOR,0);
     rc_encoder_write(RIGHT_MOTOR,0);
+
+    mb_state.turn_velocity = (mb_state.right_velocity - mb_state.left_velocity) / WHEEL_BASE;
+    mb_state.fwd_velocity =  (mb_state.left_velocity + mb_state.right_velocity) / 2;
+
+    mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * enc2meters;
+    mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * enc2meters;
+    mb_state.distance_delta = (mb_state.left_wheel_distance_delta + mb_state.right_wheel_distance_delta) / 2;
+
 
     //unlock state mutex
     pthread_mutex_unlock(&state_mutex);
@@ -213,6 +223,7 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
+    mb_update_odometry(&mb_odometry, &mb_state);
     mb_controller_update(&mb_state, &mb_setpoints);
     mb_motor_set(LEFT_MOTOR, mb_state.left_cmd);
     mb_motor_set(RIGHT_MOTOR, -mb_state.right_cmd);
@@ -385,9 +396,9 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_state.tb_angles[2]);
 			printf("%7lld  |", mb_state.left_encoder_total);
 			printf("%7lld  |", mb_state.right_encoder_total);
-			printf("%7.3f  |", mb_state.right_velocity);
-			printf("%7.3f  |", mb_state.right_cmd);
-			printf("%7.3f  |", mb_state.right_velocity - mb_setpoints.fwd_velocity);
+			printf("%7.3f  |", mb_odometry.x);
+			printf("%7.3f  |", mb_odometry.y);
+			printf("%7.3f  |", mb_odometry.theta);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
             printf("%7.4f  |\n", mb_setpoints.turn_velocity);
 
