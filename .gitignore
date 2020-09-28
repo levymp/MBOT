@@ -1,28 +1,27 @@
 # Ignore VSCODE Settings
 .vscode/settings.json
+# Ignore Mac settings
+.DS_Store
 
-# Ignore compiled files
+# Ignore compiled files and bin
 tests/enum_test
 drive_simple_encoder/drive_simple_encoder
-
-# Ignore the bin
 bin/
+
+# ignore lcm types
+lcmtypes/
 
 # ignore .o files
 /common/*.o
-/lcmtypes/*o
-/mobilebot/*o
-/measure_motor_params/*o
-# /drive_simple_encoder/*o
-/drive_simple_encoder/*o
-/drive_simple/*o
-/test_motos/*o
-.DS_Store
+/mobilebot/*.o
+/measure_motor_params/*.o
+/drive_simple_encoder/*.o
+/drive_simple_encoder/*.o
+/drive_simple/*.o
+/test_motos/*.o
 
 # ignore cache files
 /documentation/__pycache__
 
 # ignore cached files
 /python/lcmtypes/*.pyc
-# ignore lcm types
-lcmtypes/*
