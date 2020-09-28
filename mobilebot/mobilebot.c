@@ -117,6 +117,7 @@ int main(){
 #if defined(BEAGLEBONE_BLUE)
     rc_motor_cleanup();
 #endif
+    mb_destroy_controller();
     rc_encoder_cleanup();
     rc_remove_pid_file();
 	return 0;
