@@ -161,7 +161,7 @@ int mb_motor_set_all(double duty){
 * returns the measured current in A
 *******************************************************************************/
 double mb_motor_read_current(int motor){
-    mb_motor_read_current(motor)
+    // Still needs to be done
     return 0.0;
 }
 #endif
