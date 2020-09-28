@@ -4,12 +4,13 @@
 .DS_Store
 
 # Ignore compiled files and bin
-tests/enum_test
-drive_simple_encoder/drive_simple_encoder
-bin/
+/tests/enum_test
+/drive_simple_encoder/drive_simple_encoder
+/bin/
 
-# ignore lcm types
-lcmtypes/
+# ignore all files in lcm directory except for .lcm
+/lcmtypes/.*
+/lcmtypes/!*.lcm
 
 # ignore .o files
 /common/*.o
