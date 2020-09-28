@@ -7,10 +7,7 @@
 /tests/enum_test
 /drive_simple_encoder/drive_simple_encoder
 /bin/
-
-# ignore all files in lcm directory except for .lcm
-/lcmtypes/.*
-/lcmtypes/!*.lcm
+!/bin/pid.cfg
 
 # ignore .o files
 /common/*.o
