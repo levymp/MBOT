@@ -53,14 +53,8 @@ int mb_initialize_controller(){
 
     rc_filter_first_order_lowpass(&lp_filt_r,
         DT,
-        .1);  
-    // soft start
-    // if(rc_filter_enable_soft_start(&r_wheel_speed_pid, DT*2) || rc_filter_enable_soft_start(&l_wheel_speed_pid, DT*2))
-    // {
-    //     fprintf(stderr, "ERROR: FAILED TO SOFT START PID FILTER");
-    //     return -1;
-    // }
-
+        .1);
+    
     return 0;
 }
 
