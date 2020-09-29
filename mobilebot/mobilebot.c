@@ -161,8 +161,8 @@ void read_mb_sensors(){
     mb_state.turn_velocity = (mb_state.right_velocity - mb_state.left_velocity) / WHEEL_BASE;
     mb_state.fwd_velocity =  (mb_state.left_velocity + mb_state.right_velocity) / 2;
 
-    mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES);
-    mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES);
+    mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES);
+    mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * (WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES);
     mb_state.distance_delta = (mb_state.left_wheel_distance_delta + mb_state.right_wheel_distance_delta) / 2;
 
 
