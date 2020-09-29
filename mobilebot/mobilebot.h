@@ -54,6 +54,8 @@ int64_t now;
 int64_t time_offset;
 int time_offset_initialized;
 
+#define PI 3.14159265358979323846
+
 // functions
 void mobilebot_controller();
 void update_now();
