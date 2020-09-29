@@ -33,25 +33,26 @@ int mb_initialize_controller(){
 
     // left/right motors have config loaded
     // now initialize pid controller for both wheels
-    if(rc_filter_pid(&r_wheel_speed_pid, r_pid_params.kp, r_pid_params.ki, r_pid_params.kd, 4 * DT, DT) ||
-            rc_filter_pid(&l_wheel_speed_pid, l_pid_params.kp, l_pid_params.ki, l_pid_params.kd, 4 * DT, DT)) 
+    if(rc_filter_pid(&pid_filt_r, r_pid_params.kp, r_pid_params.ki, r_pid_params.kd, 4 * DT, DT) ||
+            rc_filter_pid(&pid_filt_l, l_pid_params.kp, l_pid_params.ki, l_pid_params.kd, 4 * DT, DT)) 
     {
         fprintf(stderr, "ERRROR: FAILED TO CONFIGURE PID");
         return -1;
     }
     // set saturation values
-    if(rc_filter_enable_saturation(&r_wheel_speed_pid, r_pid_params.out_lim, r_pid_params.int_lim) ||
-            rc_filter_enable_saturation(&l_wheel_speed_pid, l_pid_params.out_lim, l_pid_params.int_lim))
+    if(rc_filter_enable_saturation(&pid_filt_r, r_pid_params.out_lim, r_pid_params.int_lim) ||
+            rc_filter_enable_saturation(&pid_filt_l, l_pid_params.out_lim, l_pid_params.int_lim))
     {
         fprintf(stderr, "ERROR: FAILED TO ENABLE SATURATION VALUES");
         return -1;
     }
-    // soft start
-    // if(rc_filter_enable_soft_start(&r_wheel_speed_pid, DT*2) || rc_filter_enable_soft_start(&l_wheel_speed_pid, DT*2))
-    // {
-    //     fprintf(stderr, "ERROR: FAILED TO SOFT START PID FILTER");
-    //     return -1;
-    // }
+
+    // Set up lowpass filters for fwd velocity
+    if(rc_filter_first_order_lowpass(&lp_filt_l, DT, .1) || rc_filter_first_order_lowpass(&lp_filt_r, DT, .1)) 
+    {
+        fprintf(stderr, "ERRROR: FAILED TO CONFIGURE LOWPASS");
+        return -1;
+    }
 
     return 0;
 }
@@ -85,6 +86,8 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     double value; 
     int i;
     int count = 0;
+
+    pid_params->FF_term = .8;
 
     // Desired Keys for config
     char keys[6][10] = {
@@ -186,6 +189,22 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     return 0;
 }
 
+// Reset all the filters used in the controller
+// Return 0 on success
+int mb_controller_filter_reset(){
+    
+    if(rc_filter_reset(&pid_filt_l) ||
+    rc_filter_reset(&pid_filt_r) ||
+    rc_filter_reset(&lp_filt_l) ||
+    rc_filter_reset(&lp_filt_r))
+    {
+        fprintf(stderr, "ERRROR: FAILED TO RESET FILTERS");
+        return -1;
+    }
+    
+    return 0;
+}
+
 /*******************************************************************************
 * int mb_controller_update()
 * 
@@ -198,14 +217,30 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
-    // calculate error
-    float r_error, l_error;
-    r_error = mb_setpoints -> fwd_velocity - mb_state -> right_velocity; 
-    l_error = mb_setpoints -> fwd_velocity - mb_state -> left_velocity ; 
-    
-    // march values
-    mb_state -> left_cmd = rc_filter_march(&l_wheel_speed_pid, l_error);
-    mb_state -> right_cmd = rc_filter_march(&r_wheel_speed_pid, r_error);
+
+    // Setpoint for each wheel without lowpass filter
+    //mb_setpoints->left_velocity = (2 * mb_setpoints->fwd_velocity - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    //mb_setpoints->right_velocity = (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+
+    // Setpoint for each wheel with lowpass filter on the fwd velocity to prevent jerking the robot chassis
+    mb_setpoints->left_velocity = (2 * rc_filter_march(&lp_filt_l, mb_setpoints->fwd_velocity) - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    mb_setpoints->right_velocity = (2 * rc_filter_march(&lp_filt_r, mb_setpoints->fwd_velocity) + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+
+    // If there's a change in the fwd setpoint, reset the filters and start the wheel commands with the feed forward term
+    if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
+
+        mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
+        mb_controller_filter_reset();
+
+        // Starting cmd, Feedforward*setpoint
+        mb_state->left_cmd = l_pid_params.FF_term*mb_setpoints->left_velocity;
+        mb_state->right_cmd = r_pid_params.FF_term*mb_setpoints->right_velocity;
+    }else{
+
+        //March the PID wilter acording to the error, add the modified error to the cmd state
+        mb_state->left_cmd += rc_filter_march(&pid_filt_l, (double) (mb_setpoints->left_velocity - mb_state->left_velocity));
+        mb_state->right_cmd += rc_filter_march(&pid_filt_r, (double) (mb_setpoints->right_velocity - mb_state->right_velocity));
+    }
 
     return 0;
 }
@@ -221,8 +256,13 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 *******************************************************************************/
 
 int mb_destroy_controller(){
-    if(rc_filter_free(&r_wheel_speed_pid) || rc_filter_free(&l_wheel_speed_pid)) {
-        fprintf(stderr, "ERROR: FAILED TO FREE FILTERS");
+
+    if(rc_filter_free(&pid_filt_l) ||
+    rc_filter_free(&pid_filt_r) ||
+    rc_filter_free(&lp_filt_l) ||
+    rc_filter_free(&lp_filt_r))
+    {
+        fprintf(stderr, "ERRROR: FAILED TO FREE FILTERS");
         return -1;
     }
     

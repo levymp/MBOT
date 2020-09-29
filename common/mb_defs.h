@@ -18,16 +18,16 @@
 #define RIGHT_MOTOR             2     // id of right motor
 
 // TODO: Add convienient defines to define things like motor and encoder polarity here
-#define LEFT_ENCODER_POLARITY   -1
-#define RIGHT_ENCODER_POLARITY  1
+#define LEFT_ENCODER_POLARITY   1
+#define RIGHT_ENCODER_POLARITY -1
 
 
 
 // TODO: Fill in physical propeties of robot
-#define GEAR_RATIO              71.8  // gear ratio of motor
+#define GEAR_RATIO              78  // gear ratio of motor
 #define ENCODER_RES             20.0  // encoder counts per motor shaft revolution
-#define WHEEL_DIAMETER          0.08 // diameter of wheel in meters
-#define WHEEL_BASE              0.15875  // wheel separation distance in meters
+#define WHEEL_DIAMETER          0.084 // diameter of wheel in meters
+#define WHEEL_BASE              0.178  // wheel separation distance in meters
 #define MAX_FWD_VEL             0.8   // maximum forwad speed (m/s)
 #define MAX_TURN_VEL            2.5   // maximum turning speed (rad/s)
 
@@ -40,6 +40,7 @@
 #define LCM_PRIORITY            60    // priority of LCM thread (lower is less critical)
 #define SETPOINT_PRIORITY       30    // priority of setpoint thread (lower is less critical)
 #define CONTROLLER_PRIORITY     90    // priority of controller (lower is less critical)
+#define DELTA_THETA_THRESHOLD   0.1   // Threshold for swtiching to gyro
 
 // LCM Channel Names - should not be changed
 #define TRUE_POSE_CHANNEL           "TRUE_POSE"
