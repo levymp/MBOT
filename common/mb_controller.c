@@ -33,15 +33,15 @@ int mb_initialize_controller(){
 
     // left/right motors have config loaded
     // now initialize pid controller for both wheels
-    if(rc_filter_pid(&r_wheel_speed_pid, r_pid_params.kp, r_pid_params.ki, r_pid_params.kd, 4 * DT, DT) ||
-            rc_filter_pid(&l_wheel_speed_pid, l_pid_params.kp, l_pid_params.ki, l_pid_params.kd, 4 * DT, DT)) 
+    if(rc_filter_pid(&pid_filt_r, r_pid_params.kp, r_pid_params.ki, r_pid_params.kd, 4 * DT, DT) ||
+            rc_filter_pid(&pid_filt_l, l_pid_params.kp, l_pid_params.ki, l_pid_params.kd, 4 * DT, DT)) 
     {
         fprintf(stderr, "ERRROR: FAILED TO CONFIGURE PID");
         return -1;
     }
     // set saturation values
-    if(rc_filter_enable_saturation(&r_wheel_speed_pid, r_pid_params.out_lim, r_pid_params.int_lim) ||
-            rc_filter_enable_saturation(&l_wheel_speed_pid, l_pid_params.out_lim, l_pid_params.int_lim))
+    if(rc_filter_enable_saturation(&pid_filt_r, r_pid_params.out_lim, r_pid_params.int_lim) ||
+            rc_filter_enable_saturation(&pid_filt_l, l_pid_params.out_lim, l_pid_params.int_lim))
     {
         fprintf(stderr, "ERROR: FAILED TO ENABLE SATURATION VALUES");
         return -1;
