@@ -24,9 +24,9 @@
 
 
 // TODO: Fill in physical propeties of robot
-#define GEAR_RATIO              71.8  // gear ratio of motor
+#define GEAR_RATIO              78  // gear ratio of motor
 #define ENCODER_RES             20.0  // encoder counts per motor shaft revolution
-#define WHEEL_DIAMETER          0.08 // diameter of wheel in meters
+#define WHEEL_DIAMETER          0.084 // diameter of wheel in meters
 #define WHEEL_BASE              0.17  // wheel separation distance in meters
 #define MAX_FWD_VEL             0.8   // maximum forwad speed (m/s)
 #define MAX_TURN_VEL            2.5   // maximum turning speed (rad/s)
