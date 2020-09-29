@@ -86,7 +86,7 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     int i;
     int count = 0;
 
-    pid_params->FF_term = .8
+    pid_params->FF_term = .8;
 
     // Desired Keys for config
     char keys[6][10] = {
