@@ -209,8 +209,8 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 
     if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
         mb_controller_filter_reset(mb_state, mb_setpoints);
-        mb_state->left_cmd = l_wheel_speed_params.FF_term*mb_setpoints->left_velocity;
-        mb_state->right_cmd = r_wheel_speed_params.FF_term*mb_setpoints->right_velocity;
+        mb_state->left_cmd = l_pid_params.FF_term*mb_setpoints->left_velocity;
+        mb_state->right_cmd = r_pid_params.FF_term*mb_setpoints->right_velocity;
     }else{
         mb_state->left_cmd -= rc_filter_march(&pid_filt_l, (double) (mb_state->left_velocity - mb_setpoints->left_velocity));
         mb_state->right_cmd -= rc_filter_march(&pid_filt_r, (double) (mb_state->right_velocity - mb_setpoints->right_velocity));
