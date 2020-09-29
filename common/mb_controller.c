@@ -86,6 +86,8 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     int i;
     int count = 0;
 
+    pid_params->FF_term = .8
+
     // Desired Keys for config
     char keys[6][10] = {
         "kp",
@@ -198,14 +200,21 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
 *******************************************************************************/
 
 int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){  
-    // calculate error
-    float r_error, l_error;
-    r_error = mb_setpoints -> fwd_velocity - mb_state -> right_velocity; 
-    l_error = mb_setpoints -> fwd_velocity - mb_state -> left_velocity ; 
     
-    // march values
-    mb_state -> left_cmd = rc_filter_march(&l_wheel_speed_pid, l_error);
-    mb_state -> right_cmd = rc_filter_march(&r_wheel_speed_pid, r_error);
+    mb_setpoints->left_velocity = (2 * mb_setpoints->fwd_velocity - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    mb_setpoints->right_velocity = (2 * mb_setpoints->fwd_velocity + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+
+    //mb_setpoints->left_velocity = (2 * rc_filter_march(&lp_filt_r, mb_setpoints->fwd_velocity) - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+    //mb_setpoints->right_velocity = (2 * rc_filter_march(&lp_filt_l, mb_setpoints->fwd_velocity) + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
+
+    if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
+        mb_controller_filter_reset(mb_state, mb_setpoints);
+        mb_state->left_cmd = l_wheel_speed_params.FF_term*mb_setpoints->left_velocity;
+        mb_state->right_cmd = r_wheel_speed_params.FF_term*mb_setpoints->right_velocity;
+    }else{
+        mb_state->left_cmd -= rc_filter_march(&pid_filt_l, (double) (mb_state->left_velocity - mb_setpoints->left_velocity));
+        mb_state->right_cmd -= rc_filter_march(&pid_filt_r, (double) (mb_state->right_velocity - mb_setpoints->right_velocity));
+    }
 
     return 0;
 }
@@ -221,10 +230,10 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 *******************************************************************************/
 
 int mb_destroy_controller(){
-    if(rc_filter_free(&r_wheel_speed_pid) || rc_filter_free(&l_wheel_speed_pid)) {
-        fprintf(stderr, "ERROR: FAILED TO FREE FILTERS");
-        return -1;
-    }
+    rc_filter_free(&pid_filt_l);
+    rc_filter_free(&pid_filt_r);
+    rc_filter_free(&lp_filt_l);
+    rc_filter_free(&lp_filt_r);
     
     return 0;
 }

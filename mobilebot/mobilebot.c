@@ -138,6 +138,8 @@ void read_mb_sensors(){
     mb_state.last_yaw = mb_state.tb_angles[2];
     mb_state.tb_angles[2] = imu_data.dmp_TaitBryan[TB_YAW_Z];
     mb_state.temp = imu_data.temp;
+    mb_state.yaw_delta = mb_angle_diff_radians(mb_state.last_yaw, mb_state.tb_angles[2]);
+    mb_state.gyro_heading_delta = mb_state.gyro[2] * PI / (180.0 * SAMPLE_RATE_HZ);
 
     int i;
     for(i=0;i<3;i++){
@@ -149,10 +151,20 @@ void read_mb_sensors(){
     // Read encoders    
     mb_state.left_encoder_delta = LEFT_ENCODER_POLARITY * rc_encoder_read(LEFT_MOTOR);
     mb_state.right_encoder_delta = RIGHT_ENCODER_POLARITY * rc_encoder_read(RIGHT_MOTOR);
+    mb_state.left_velocity = ((float) mb_state.left_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT);
+    mb_state.right_velocity = ((float) mb_state.right_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES))/(DT);    
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
     rc_encoder_write(LEFT_MOTOR,0);
     rc_encoder_write(RIGHT_MOTOR,0);
+
+    mb_state.turn_velocity = (mb_state.right_velocity - mb_state.left_velocity) / WHEEL_BASE;
+    mb_state.fwd_velocity =  (mb_state.left_velocity + mb_state.right_velocity) / 2;
+
+    mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES);
+    mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * (2*WHEEL_DIAMETER * 3.141) / (GEAR_RATIO * ENCODER_RES);
+    mb_state.distance_delta = (mb_state.left_wheel_distance_delta + mb_state.right_wheel_distance_delta) / 2;
+
 
     //unlock state mutex
     pthread_mutex_unlock(&state_mutex);
@@ -211,8 +223,9 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
+    mb_update_odometry(&mb_odometry, &mb_state);
     publish_mb_msgs();
-
+    
     mb_controller_update(&mb_state, &mb_setpoints);
     mb_motor_set(RIGHT_MOTOR, mb_state.right_cmd);
     mb_motor_set(LEFT_MOTOR, mb_state.left_cmd);
