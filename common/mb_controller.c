@@ -46,6 +46,14 @@ int mb_initialize_controller(){
         fprintf(stderr, "ERROR: FAILED TO ENABLE SATURATION VALUES");
         return -1;
     }
+
+    rc_filter_first_order_lowpass(&lp_filt_l,
+        DT,
+        .1);  
+
+    rc_filter_first_order_lowpass(&lp_filt_r,
+        DT,
+        .1);  
     // soft start
     // if(rc_filter_enable_soft_start(&r_wheel_speed_pid, DT*2) || rc_filter_enable_soft_start(&l_wheel_speed_pid, DT*2))
     // {
@@ -185,6 +193,17 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     free(line);
     free(result);
     fclose(file);
+    return 0;
+}
+
+int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
+
+    mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
+    rc_filter_reset(&pid_filt_l);
+    rc_filter_reset(&pid_filt_r);
+    rc_filter_reset(&lp_filt_l);
+    rc_filter_reset(&lp_filt_r);
+    
     return 0;
 }
 
