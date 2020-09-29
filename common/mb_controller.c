@@ -48,7 +48,8 @@ int mb_initialize_controller(){
     }
 
     // Set up lowpass filters for fwd velocity
-    if(rc_filter_first_order_lowpass(&lp_filt_l, DT, .1) || rc_filter_first_order_lowpass(&lp_filt_r, DT, .1)) {
+    if(rc_filter_first_order_lowpass(&lp_filt_l, DT, .1) || rc_filter_first_order_lowpass(&lp_filt_r, DT, .1)) 
+    {
         fprintf(stderr, "ERRROR: FAILED TO CONFIGURE LOWPASS");
         return -1;
     }
@@ -191,11 +192,15 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
 // Reset all the filters used in the controller
 // Return 0 on success
 int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
-
-    rc_filter_reset(&pid_filt_l);
-    rc_filter_reset(&pid_filt_r);
-    rc_filter_reset(&lp_filt_l);
-    rc_filter_reset(&lp_filt_r);
+    
+    if(rc_filter_reset(&pid_filt_l) ||
+    rc_filter_reset(&pid_filt_r) ||
+    rc_filter_reset(&lp_filt_l) ||
+    rc_filter_reset(&lp_filt_r))
+    {
+        fprintf(stderr, "ERRROR: FAILED TO RESET FILTERS");
+        return -1;
+    }
     
     return 0;
 }
@@ -251,10 +256,15 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 *******************************************************************************/
 
 int mb_destroy_controller(){
-    rc_filter_free(&pid_filt_l);
-    rc_filter_free(&pid_filt_r);
-    rc_filter_free(&lp_filt_l);
-    rc_filter_free(&lp_filt_r);
+
+    if(rc_filter_free(&pid_filt_l) ||
+    rc_filter_free(&pid_filt_r) ||
+    rc_filter_free(&lp_filt_l) ||
+    rc_filter_free(&lp_filt_r))
+    {
+        fprintf(stderr, "ERRROR: FAILED TO FREE FILTERS");
+        return -1;
+    }
     
     return 0;
 }
