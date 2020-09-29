@@ -77,27 +77,19 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     
     // Filter setpoint to avoid high frequency content of step-like inputs
     float fwd_vel_filt = rc_filter_march(&fwd_vel_sp_lpf, mb_setpoints->fwd_velocity);
-    fwd_vel_filt = mb_setpoints->fwd_velocity;
+    float turn_vel_filt = mb_setpoints->turn_velocity;
+    //fwd_vel_filt = mb_setpoints->fwd_velocity;
     // Determine velocity error for both left and right wheels
-    float left_vel_setpoint = fwd_vel_filt;
-    float right_vel_setpoint = fwd_vel_filt;
+    float left_vel_setpoint = fwd_vel_filt - turn_vel_filt*WHEEL_BASE/2.0;
+    float right_vel_setpoint = fwd_vel_filt + turn_vel_filt*WHEEL_BASE/2.0;
 
     float left_err = left_vel_setpoint - mb_state->left_velocity;
     float right_err = right_vel_setpoint - mb_state->right_velocity;
-    // if (abs(left_err) < 1.0e-10){
-    //     rc_filter_reset(&left_wheel_speed_pid);
-    //     rc_filter_pid(&left_wheel_speed_pid, pid_params.kp, pid_params.ki, pid_params.kd, pid_params.dFilterHz, DT);
-    // }
-    // if (abs(right_err) < 1.0e-10){
-    //     rc_filter_reset(&right_wheel_speed_pid);
-    //     rc_filter_pid(&right_wheel_speed_pid, pid_params.kp, pid_params.ki, pid_params.kd, pid_params.dFilterHz, DT);
-
-    // }
 
     // Calculate feed-forward term for each wheel
     // Based on free floating wheel
-    float left_ff = 0.9839674495766608 * left_vel_setpoint + 0.009105866186956774;
-    float right_ff = 0.9847512260577416 * right_vel_setpoint + 0.012830887327368673;
+    float left_ff = 1.0 * left_vel_setpoint + 0.01;
+    float right_ff = 1.0 * right_vel_setpoint + 0.01;
 
     // Calculate PID output
     float left_pid = rc_filter_march(&left_wheel_speed_pid, left_err);

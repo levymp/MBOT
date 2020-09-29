@@ -33,6 +33,9 @@ struct mb_state{
     float   right_cmd; //right wheel command [-1..1]
 
     //TODO: Add more variables to this state as needed
+    float delta_distance;
+    float delta_theta_gyro;
+    float delta_theta_odometry;
 };
 
 typedef struct mb_setpoints mb_setpoints_t;

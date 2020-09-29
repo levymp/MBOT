@@ -19,6 +19,9 @@
 *
 *******************************************************************************/
 void mb_initialize_odometry(mb_odometry_t* mb_odometry, float x, float y, float theta){
+    mb_odometry->theta = theta;
+    mb_odometry->x = x;
+    mb_odometry->y = y;
 }
 
 
@@ -30,6 +33,18 @@ void mb_initialize_odometry(mb_odometry_t* mb_odometry, float x, float y, float 
 *
 *******************************************************************************/
 void mb_update_odometry(mb_odometry_t* mb_odometry, mb_state_t* mb_state){
+    float delta_gyro_odo = mb_state->delta_theta_gyro - mb_state->delta_theta_odometry;
+
+    float delta_theta = mb_state->delta_theta_odometry;
+    // Choose to use given 'theta' based on difference between measurements
+    if(fabs(delta_gyro_odo) > 0.1 && !(mb_state->left_velocity == 0 && mb_state->right_velocity == 0)){
+        delta_theta = mb_state->delta_theta_gyro;
+    }
+
+    mb_odometry->x += mb_state->delta_distance * cos(mb_clamp_radians(mb_odometry->theta + delta_theta/2));
+    mb_odometry->x += mb_state->delta_distance * cos(mb_clamp_radians(mb_odometry->theta + delta_theta/2));
+    mb_odometry->theta = mb_clamp_radians(mb_odometry->theta + delta_theta);
+
 }
 
 

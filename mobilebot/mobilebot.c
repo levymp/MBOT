@@ -9,7 +9,8 @@
 * 
 *******************************************************************************/
 #include "mobilebot.h"
-float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
+#define PI 3.14159265358979323846
+float enc2meters = (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
 
 /*******************************************************************************
 * int main() 
@@ -111,7 +112,8 @@ int main(){
     rc_pthread_timed_join(dsm_radio_thread, NULL, 1.5);
     rc_led_set(RC_LED_GREEN, LED_OFF);
     rc_led_set(RC_LED_RED, LED_OFF);
-    rc_mpu_power_off();
+    mb_motor_cleanup();
+
 #if defined(MRC_VERSION_1v3) || defined(MRC_VERSION_2v1)
     mb_motor_cleanup();
 #endif
@@ -119,8 +121,8 @@ int main(){
     rc_motor_cleanup();
 #endif
     rc_encoder_eqep_cleanup();
-    mb_motor_cleanup();
     mb_destroy_controller();
+    rc_mpu_power_off();
     rc_remove_pid_file();
 	return 0;
 }
@@ -141,6 +143,9 @@ void read_mb_sensors(){
     mb_state.tb_angles[2] = imu_data.dmp_TaitBryan[TB_YAW_Z];
     mb_state.temp = imu_data.temp;
 
+    // Get 'difference' / estimated changes in gyro and odometry heading measurements
+    mb_state.delta_theta_odometry = mb_angle_diff_radians(mb_state.last_yaw, mb_state.tb_angles[2]);
+    mb_state.delta_theta_gyro = mb_state.gyro[2] * M_PI / (180.0 / DT);
     int i;
     for(i=0;i<3;i++){
         mb_state.accel[i] = imu_data.accel[i];
@@ -153,12 +158,18 @@ void read_mb_sensors(){
     mb_state.right_encoder_delta = RIGHT_ENCODER_POL*rc_encoder_eqep_read(RIGHT_ENCODER);
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
-
-    mb_state.left_velocity = (mb_state.left_encoder_delta * enc2meters)/DT;
-    mb_state.right_velocity = (mb_state.right_encoder_delta * enc2meters)/DT;
-    
     rc_encoder_eqep_write(LEFT_ENCODER,0);
     rc_encoder_eqep_write(RIGHT_ENCODER,0);
+
+    // Determine velocities
+    mb_state.left_velocity = (mb_state.left_encoder_delta * enc2meters)/DT;
+    mb_state.right_velocity = (mb_state.right_encoder_delta * enc2meters)/DT;
+    mb_state.fwd_velocity = (mb_state.left_velocity + mb_state.right_velocity) / 2.0;
+    mb_state.turn_velocity = (mb_state.right_velocity - mb_state.left_velocity) / (PI * WHEEL_BASE);
+
+    // Estimate change in distance for use in odomoetry / gyrodometry
+    mb_state.delta_distance = DT * mb_state.fwd_velocity;
+
     //unlock state mutex
     pthread_mutex_unlock(&state_mutex);
 
@@ -173,7 +184,7 @@ void read_mb_sensors(){
 void publish_mb_msgs(){
     mbot_imu_t imu_msg;
     mbot_encoder_t encoder_msg;
-//  odometry_t odo_msg;
+    odometry_t odo_msg;
 
     //Create IMU LCM Message
     imu_msg.utime = now;
@@ -193,11 +204,15 @@ void publish_mb_msgs(){
     encoder_msg.rightticks = mb_state.right_encoder_total;
 
     //TODO: Create Odometry LCM message
+    odo_msg.utime = now;
+    odo_msg.x = mb_odometry.x;
+    odo_msg.y = mb_odometry.y;
+    odo_msg.theta = mb_odometry.theta;
 
     //publish IMU & Encoder Data to LCM
     mbot_imu_t_publish(lcm, MBOT_IMU_CHANNEL, &imu_msg);
     mbot_encoder_t_publish(lcm, MBOT_ENCODER_CHANNEL, &encoder_msg);
-//  odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
+    odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
 }
 
 /*******************************************************************************
@@ -216,12 +231,13 @@ void publish_mb_msgs(){
 void mobilebot_controller(){
     update_now();
     read_mb_sensors();
-    
+    publish_mb_msgs();
+
+    mb_update_odometry(&mb_odometry, &mb_state);
     mb_controller_update(&mb_state, &mb_setpoints);
     mb_motor_set(LEFT_MOTOR, mb_state.left_cmd);
     mb_motor_set(RIGHT_MOTOR, mb_state.right_cmd);
 
-    publish_mb_msgs();
 
 }
 

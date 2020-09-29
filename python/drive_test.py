@@ -28,7 +28,7 @@ turn_command.angular_v = 3.1415/2.0 #turn 180 in 2s
 
 print("Sending Command")
 lc.publish("MBOT_MOTOR_COMMAND",drive_command.encode())
-sleep(10.0)
+sleep(5.0)
 # lc.publish("MBOT_MOTOR_COMMAND",turn_command.encode())
 # sleep(1.0)
 # lc.publish("MBOT_MOTOR_COMMAND",drive_command.encode())
