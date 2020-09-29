@@ -35,7 +35,7 @@ void mb_initialize_odometry(mb_odometry_t* mb_odometry, float x, float y, float 
 void mb_update_odometry(mb_odometry_t* mb_odometry, mb_state_t* mb_state){
     float diff = mb_state->yaw_delta - mb_state->gyro_heading_delta;
     
-    if (abs(diff) > 0.1 && (mb_state->left_velocity != 0 || mb_state->right_velocity != 0)) {
+    if (fabs(diff) > 0.1 && (mb_state->left_velocity != 0 || mb_state->right_velocity != 0)) {
         mb_state->picked_delta = mb_state->gyro_heading_delta;
     } else {
         mb_state->picked_delta = mb_state->yaw_delta;
