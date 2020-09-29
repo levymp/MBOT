@@ -47,14 +47,13 @@ int mb_initialize_controller(){
         return -1;
     }
 
-    rc_filter_first_order_lowpass(&lp_filt_l,
-        DT,
-        .1);  
+    if(rc_filter_first_order_lowpass(&lp_filt_l, DT, .1) || rc_filter_first_order_lowpass(&lp_filt_r, DT, .1)) {
+        fprintf(stderr, "ERRROR: FAILED TO CONFIGURE LOWPASS");
+        return -1;
+    }
 
-    rc_filter_first_order_lowpass(&lp_filt_r,
-        DT,
-        .1);
     
+
     return 0;
 }
 
