@@ -40,6 +40,7 @@
 #define LCM_PRIORITY            60    // priority of LCM thread (lower is less critical)
 #define SETPOINT_PRIORITY       30    // priority of setpoint thread (lower is less critical)
 #define CONTROLLER_PRIORITY     90    // priority of controller (lower is less critical)
+#define DELTA_THETA_THRESHOLD   0.1   // Threshold for swtiching to gyro
 
 // LCM Channel Names - should not be changed
 #define TRUE_POSE_CHANNEL           "TRUE_POSE"
