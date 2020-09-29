@@ -1,5 +1,5 @@
 # MBOT
-![alt text](https://github.com/[levymp]/[MBOT]/blob/[documentation]/MBOT.jpg?raw=true)
+![Alt text](documentation/static/img/MBOT.jpeg?raw=true "Title")
 
 ## Contributors
 Michael Levy / Hamil Shah / Sam Ansaldo / Xun Fu
