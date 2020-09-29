@@ -1,5 +1,5 @@
 # MBOT
-[MBOT ROBOT](/documentation/img/MBOT.jpeg)
+![MBOT ROBOT](/documentation/img/MBOT.jpeg)
 
 ## Contributors
 Michael Levy / Hamil Shah / Sam Ansaldo / Xun Fu
