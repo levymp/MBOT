@@ -191,7 +191,7 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
 
 // Reset all the filters used in the controller
 // Return 0 on success
-int mb_controller_filter_reset(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
+int mb_controller_filter_reset(){
     
     if(rc_filter_reset(&pid_filt_l) ||
     rc_filter_reset(&pid_filt_r) ||
@@ -230,7 +230,7 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
 
         mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
-        mb_controller_filter_reset(mb_state, mb_setpoints);
+        mb_controller_filter_reset();
 
         // Starting cmd, Feedforward*setpoint
         mb_state->left_cmd = l_pid_params.FF_term*mb_setpoints->left_velocity;
