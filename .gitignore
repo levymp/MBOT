@@ -16,11 +16,13 @@ measure_motor_params/*.o
 drive_simple_encoder/*.o
 drive_simple_encoder/*.o
 drive_simple/*.o
-test_motos/*.o
-test_motors/test_motors.o
+/test_motors/*.o
 
 # ignore cache files
 documentation/__pycache__
 
 # ignore cached files
 python/lcmtypes/*.pyc
+common/bot_defs.h
+test_motors/test_motors.o
+
