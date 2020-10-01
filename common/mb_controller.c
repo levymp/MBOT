@@ -87,19 +87,20 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     int i;
     int count = 0;
 
-    pid_params->FF_term = .8;
-
     // Desired Keys for config
-    char keys[6][10] = {
+    char keys[7][10] = {
         "kp",
         "ki",
         "kd",
         "dfilterhz",
         "out_lim", 
-        "int_lim"
+        "int_lim",
+        "FF_term"
     };
+
     // length of keys
     int keys_length =(int)sizeof(keys)/sizeof(keys[0]);
+    
     // Open file
     file = fopen(CFG_PATH, "r");
     if (file == NULL) {
@@ -114,7 +115,7 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
             continue;
         }
         
-        // lower case all values
+        // lowercase all values
         for(i = 0; i < (int)nread; i++) {
             line[i] = tolower(line[i]);
         }
@@ -166,6 +167,8 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
                         pid_params->int_lim = value;
                         count++;
                         break;    
+                    case 6:
+                        pid_params->FF_term = value;
                     default:
                         fprintf(stderr, "ERROR: UNEXPECTED VALUE FOUND WHEN READING CONFIG");
                         return -1;
