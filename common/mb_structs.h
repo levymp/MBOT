@@ -6,12 +6,12 @@
 typedef struct mb_state mb_state_t;
 struct mb_state{
     // raw sensor inputs
-    float tb_angles[3]; // DMP filtered angles, tb_angles[3] is heading
+    float tb_angles[3]; // DMP filtered angles, tb_angles[2] is heading
     float accel[3]; // units of m/s^2
     float gyro[3];  // units of degrees/s
     float mag[3];   // units of uT
     float temp;     // units of degrees Celsius
-    float last_yaw;
+    float last_yaw;  // last yaw from IMU not encoder
     
     int     left_encoder_delta;      // left encoder counts since last reading
     int     right_encoder_delta;     // right encoder counts since last reading
@@ -33,8 +33,8 @@ struct mb_state{
     float   right_cmd; //right wheel command [-1..1]
 
     //TODO: Add more variables to this state as needed
-    float yaw_delta; // change of heading sine last reading
-    float gyro_heading_delta; // change of heading from gyro since last reading
+    float yaw_delta; // change of heading since last reading using gryo
+    float encoder_yaw_delta; // change of heading last reading using encoder onlys 
     float picked_delta; //pick one delta from yaw_delta and gyro_heading_delta
     float left_wheel_distance_delta;
     float right_wheel_distance_delta;

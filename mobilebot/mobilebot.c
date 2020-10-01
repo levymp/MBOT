@@ -45,6 +45,14 @@ int main(){
     //wait for threads to set up
     rc_nanosleep(1E5);
 
+    //calibrating imu/gyro
+    rc_mpu_config_t cali_config = rc_mpu_default_config();
+    cali_config.i2c_bus = 2;
+    if (rc_mpu_calibrate_gyro_routine(cali_config) < 0) {
+        fprintf(stderr,"ERROR: fail to calibrate gyro.\n");
+        return -1;
+    }
+
 	// set up IMU configuration
     // see RCL documentation for other parameters
 	printf("initializing imu... \n");
@@ -138,8 +146,7 @@ void read_mb_sensors(){
     mb_state.last_yaw = mb_state.tb_angles[2];
     mb_state.tb_angles[2] = imu_data.dmp_TaitBryan[TB_YAW_Z];
     mb_state.temp = imu_data.temp;
-    mb_state.yaw_delta = mb_angle_diff_radians(mb_state.last_yaw, mb_state.tb_angles[2]);
-    mb_state.gyro_heading_delta = mb_state.gyro[2] * PI / (180.0 * SAMPLE_RATE_HZ);
+    mb_state.yaw_delta = mb_state.tb_angles[2] - mb_state.last_yaw;
 
     int i;
     for(i=0;i<3;i++){
@@ -164,7 +171,7 @@ void read_mb_sensors(){
     mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
     mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
     mb_state.distance_delta = (mb_state.left_wheel_distance_delta + mb_state.right_wheel_distance_delta) / 2;
-
+    mb_state.encoder_yaw_delta = (mb_state.right_wheel_distance_delta - mb_state.left_wheel_distance_delta) / WHEEL_BASE;
 
     //unlock state mutex
     pthread_mutex_unlock(&state_mutex);
