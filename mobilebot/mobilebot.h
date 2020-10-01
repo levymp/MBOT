@@ -42,6 +42,7 @@
 #include "../common/mb_controller.h"
 #include "../common/mb_odometry.h"
 #include "../common/mb_motor.h"
+#include "../common/bot_defs.h"
 
 // global variables
 lcm_t * lcm;

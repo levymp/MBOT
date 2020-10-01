@@ -20,7 +20,7 @@
 #include <rc/motor.h>
 #include "../common/mb_motor.h"
 #include "../common/mb_defs.h"
-
+#include "../common/bot_defs.h"
 
 float enc2meters = (WHEEL_DIAMETER * M_PI) / (GEAR_RATIO * ENCODER_RES);
 
