@@ -95,7 +95,7 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
         "dfilterhz",
         "out_lim", 
         "int_lim",
-        "FF_term"
+        "ff_term"
     };
 
     // length of keys
@@ -169,6 +169,8 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
                         break;    
                     case 6:
                         pid_params->FF_term = value;
+                        count++;
+                        break;
                     default:
                         fprintf(stderr, "ERROR: UNEXPECTED VALUE FOUND WHEN READING CONFIG");
                         return -1;
@@ -182,7 +184,7 @@ int mb_load_controller_config(pid_parameters_t* pid_params){
     }
     // Final Check 
     if(count != keys_length) {
-            fprintf(stderr, "ERROR: DID NOT WRITE ALL VALUES FROM CONFIG FILE TO PID PARAMS");
+            fprintf(stderr, "ERROR: DID NOT WRITE %d VALUE(S) FROM CONFIG FILE TO PID PARAMS\n", keys_length - count);
             return -1;
     }
     // Clean up and exit
