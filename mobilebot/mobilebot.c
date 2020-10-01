@@ -204,10 +204,11 @@ void publish_mb_msgs(){
     odo_msg.x = mb_odometry.x;
     odo_msg.y = mb_odometry.y;
     odo_msg.theta = mb_odometry.theta;
+    
     //publish IMU & Encoder Data to LCM
     mbot_imu_t_publish(lcm, MBOT_IMU_CHANNEL, &imu_msg);
     mbot_encoder_t_publish(lcm, MBOT_ENCODER_CHANNEL, &encoder_msg);
-//  odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
+    odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
 }
 
 /*******************************************************************************
