@@ -13,6 +13,7 @@
 #include <rc/adc.h>
 #include "mb_motor.h"
 #include "mb_defs.h"
+#include "bot_defs.h"
 
 // preposessor macros
 #define unlikely(x) __builtin_expect (!!(x), 0)

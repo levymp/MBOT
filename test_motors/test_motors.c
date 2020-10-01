@@ -17,6 +17,7 @@
 #include <rc/motor.h>
 #include "../common/mb_motor.h"
 #include "../common/mb_defs.h"
+#include "../common/bot_defs.h"
 
 
 void rc_test_motor_procedure(float duty);
