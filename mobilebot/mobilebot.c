@@ -180,7 +180,7 @@ void read_mb_sensors(){
 void publish_mb_msgs(){
     mbot_imu_t imu_msg;
     mbot_encoder_t encoder_msg;
-//  odometry_t odo_msg;
+    odometry_t odo_msg;
 
     //Create IMU LCM Message
     imu_msg.utime = now;
@@ -200,11 +200,15 @@ void publish_mb_msgs(){
     encoder_msg.rightticks = mb_state.right_encoder_total;
 
     //TODO: Create Odometry LCM message
-
+    odo_msg.utime = now;
+    odo_msg.x = mb_odometry.x;
+    odo_msg.y = mb_odometry.y;
+    odo_msg.theta = mb_odometry.theta;
+    
     //publish IMU & Encoder Data to LCM
     mbot_imu_t_publish(lcm, MBOT_IMU_CHANNEL, &imu_msg);
     mbot_encoder_t_publish(lcm, MBOT_ENCODER_CHANNEL, &encoder_msg);
-//  odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
+    odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
 }
 
 /*******************************************************************************
