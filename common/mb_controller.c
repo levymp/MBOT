@@ -80,8 +80,8 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     float turn_vel_filt = mb_setpoints->turn_velocity;
     //fwd_vel_filt = mb_setpoints->fwd_velocity;
     // Determine velocity error for both left and right wheels
-    float left_vel_setpoint = fwd_vel_filt - turn_vel_filt*WHEEL_BASE/2.0;
-    float right_vel_setpoint = fwd_vel_filt + turn_vel_filt*WHEEL_BASE/2.0;
+    float left_vel_setpoint = fwd_vel_filt - 0.0*turn_vel_filt*WHEEL_BASE/2.0;
+    float right_vel_setpoint = fwd_vel_filt + 0.0*turn_vel_filt*WHEEL_BASE/2.0;
 
     float left_err = left_vel_setpoint - mb_state->left_velocity;
     float right_err = right_vel_setpoint - mb_state->right_velocity;
@@ -100,8 +100,8 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     float right_cmd = right_pid + right_ff;
 
     // Saturate command to the range of possible values
-    rc_saturate_float(&left_cmd, -1.0f, 1.0f);
-    rc_saturate_float(&right_cmd, -1.0f, 1.0f);
+    rc_saturate_float(&left_cmd, -1.0, 1.0);
+    rc_saturate_float(&right_cmd, -1.0, 1.0);
 
 
     // "Publish" command

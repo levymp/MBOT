@@ -69,7 +69,6 @@ int main(){
 	mb_initialize_controller();
 
 	printf("initializing motors...\n");
-    mb_motor_init();
 #if defined(MRC_VERSION_1v3) || defined(MRC_VERSION_2v1)
 	mb_motor_init();
     mb_motor_brake(1);
@@ -83,7 +82,7 @@ int main(){
     rc_motor_set(1,0);
     rc_motor_set(2,0);
 #endif
-
+    mb_motor_init();
 	printf("initializing odometry...\n");
     rc_encoder_eqep_init();
     rc_encoder_eqep_write(1, 0);

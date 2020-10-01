@@ -83,8 +83,8 @@ int mb_motor_disable(){
         fprintf(stderr,"ERROR: trying to disable motors before motors have been initialized\n");
         return -1;
     }
-    rc_motor_set(LEFT_MOTOR,0);
-    rc_motor_set(RIGHT_MOTOR,0);
+    rc_motor_set(LEFT_MOTOR,0.0);
+    rc_motor_set(RIGHT_MOTOR,0.0);
     return 0;
 }
 
@@ -103,12 +103,7 @@ int mb_motor_set(int motor, double duty){
         fprintf(stderr,"ERROR: trying to rc_set_motor_all before they have been initialized\n");
         return -1;
     }
-    if (motor == LEFT_MOTOR){
-        rc_motor_set(LEFT_MOTOR, duty);
-    }
-    else{
-        rc_motor_set(RIGHT_MOTOR, duty);
-    }
+    rc_motor_set(motor, duty);
     return 0;
 }
 
