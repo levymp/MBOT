@@ -65,6 +65,7 @@ int main(){
 	//attach controller function to IMU interrupt
 	printf("initializing controller...\n");
 	
+    mb_initialize_controller();
 
 	printf("initializing motors...\n");
     mb_motor_init();
