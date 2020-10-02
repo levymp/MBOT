@@ -64,7 +64,7 @@ int main(){
 
 	//attach controller function to IMU interrupt
 	printf("initializing controller...\n");
-	mb_initialize_controller();
+	
 
 	printf("initializing motors...\n");
     mb_motor_init();
@@ -406,7 +406,7 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.y);
 			printf("%7.3f  |", mb_odometry.theta);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
-            printf("%7.3f  |", mb_setpoints.turn_velocity);
+            printf("%7.3f  |", mb_state->left_velocity);
 
 			fflush(stdout);
 		}
