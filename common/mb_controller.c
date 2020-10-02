@@ -233,7 +233,7 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
 
 
     // If there's a change in the fwd setpoint, reset the filters and start the wheel commands with the feed forward term
-    if(fabs(mb_setpoints->fwd_velocity - mb_setpoints->old_fwd) > .1){
+    if(fabs(mb_setpoints->fwd_velocity - mb_setpoints->old_fwd) > .1 || mb_setpoints->fwd_velocity+mb_setpoints->turn_velocity == 0){
         mb_controller_filter_reset();
         // Starting cmd, Feedforward*setpoint
         mb_state->left_cmd = l_pid_params.FF_term*mb_setpoints->left_velocity;
