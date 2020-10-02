@@ -406,7 +406,7 @@ void* printf_loop(void* ptr){
 			printf("%7.3f  |", mb_odometry.y);
 			printf("%7.3f  |", mb_odometry.theta);
 			printf("%7.3f  |", mb_setpoints.fwd_velocity);
-            printf("%7.3f  |", mb_state.sleft_velocity);
+            printf("%7.3f  |", mb_state.left_velocity);
 
 			fflush(stdout);
 		}
