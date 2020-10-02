@@ -230,23 +230,20 @@ int mb_controller_update(mb_state_t* mb_state, mb_setpoints_t* mb_setpoints){
     // Setpoint for each wheel with lowpass filter on the fwd velocity to prevent jerking the robot chassis
     mb_setpoints->left_velocity = (2 * rc_filter_march(&lp_filt_l, mb_setpoints->fwd_velocity) - WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
     mb_setpoints->right_velocity = (2 * rc_filter_march(&lp_filt_r, mb_setpoints->fwd_velocity) + WHEEL_BASE * mb_setpoints->turn_velocity) / 2;
-    
+
 
     // If there's a change in the fwd setpoint, reset the filters and start the wheel commands with the feed forward term
-    if(mb_setpoints->fwd_velocity != mb_setpoints->old_fwd){
-
-        mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
+    if(fabs(mb_setpoints->fwd_velocity - mb_setpoints->old_fwd) > .5){
         mb_controller_filter_reset();
-
         // Starting cmd, Feedforward*setpoint
         mb_state->left_cmd = l_pid_params.FF_term*mb_setpoints->left_velocity;
         mb_state->right_cmd = r_pid_params.FF_term*mb_setpoints->right_velocity;
-    }else{
-
-        //March the PID wilter acording to the error, add the modified error to the cmd state
-        mb_state->left_cmd += rc_filter_march(&pid_filt_l, (double) (mb_setpoints->left_velocity - mb_state->left_velocity));
-        mb_state->right_cmd += rc_filter_march(&pid_filt_r, (double) (mb_setpoints->right_velocity - mb_state->right_velocity));
     }
+    //March the PID wilter acording to the error, add the modified error to the cmd state
+    mb_state->left_cmd += rc_filter_march(&pid_filt_l, (double) (mb_setpoints->left_velocity - mb_state->left_velocity));
+    mb_state->right_cmd += rc_filter_march(&pid_filt_r, (double) (mb_setpoints->right_velocity - mb_state->right_velocity));
+    
+    mb_setpoints->old_fwd = mb_setpoints->fwd_velocity;
 
     return 0;
 }
