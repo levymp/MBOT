@@ -1,11 +1,11 @@
 import streamlit as st
 import pandas as pd
 
-st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='collapsed')
+st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='open')
 
 st.title('MBot Setup')
 
-st.write('''
+'''
 Michigan Bot *(MBOT)* is a small mobile robot used with the Graduate Robotics Systems Laboratory course at University of Michigan.
 Below is my intitial work completed on the robot.\n
 ***Please forgive the cheesy music in my videos 😊***\n
@@ -13,46 +13,51 @@ Below is my intitial work completed on the robot.\n
 
 ## **Assembly**   
 *Timelapse of robot assembly.*
-''')
+'''
 
 # assembly timelapse
 st.video('https://www.youtube.com/watch?v=HLtRFjogLS4')
 
-st.write('''
+'''
 ## **Simple Driving**   
 *MBOT driving around using the teleop_simple program.*
-''')
+'''
 
 # teleop video
 st.video('https://www.youtube.com/watch?v=lfkwy5WPypM')
 
 
-st.write('''
+'''
 ## **MBOT Driven by timer**   
 *Simple program written to control robot based purely on time. This was using my best 
-guess as to the time it took the robot to turn or travel 1 meter.*'''
-)
+guess as to the time it took the robot to turn or travel 1 meter.*
+'''
+
 
 # Video of MBOT driving around in naive square
 st.video('https://www.youtube.com/watch?v=5oChKWP_mrs')
 
 # 
-st.write('''
+'''
 ## **MBOT Driven by encoder readings**   
-*MBOT driving around on three different surfaces using the encoders to track distance. See on screen display to show encoder readings and distance traveled.*'''
-)
+*MBOT driving around on three different surfaces using the encoders to track distance. See on screen display to show encoder readings and distance traveled.*
+'''
+
 st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
 
 
-st.write('''### **Encoder Data**  
+'''
+### **Encoder Data**  
 *This is data from each encoder in order to measure the average rotation of one wheel.*  
-*Calculating the average rotation helped me build the logic around a 90&deg turn or covering one 1 meter.*''')
+*Calculating the average rotation helped me build the logic around a 90&deg turn or covering one 1 meter.*
+'''
+
 
 df = pd.read_excel('/home/michaellevy/projects/MBOT/documentation/encoder_values.xlsx')
 st.table(df)
 
 
-st.write('''
+'''
 ## **Observations**
 ***Surfaces Tested***
 * Hardwood floor
@@ -87,4 +92,4 @@ This method is called odometry and is used to update a robot’s position over i
 I would also use Proportional Integral Derivative (PID) controller to regulate the motor’s duty cycle based on a target duty cycle and keeping the encoder difference to a minimum (while driving in a straight line). 
 To increase accuracy, I would also fuse the Inertial Measurement Unit (IMU) data to reconstruct the MBOT’s position. 
 Additionally, I would use the LIDAR unit to map the surroundings and keep track of the MBOTs location with a method such as Simultaneous Localization and Mapping.
-''')
+'''
