@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 
@@ -53,7 +54,7 @@ st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
 '''
 
 
-df = pd.read_excel('/home/michaellevy/projects/MBOT/documentation/encoder_values.xlsx')
+df = pd.read_excel(os.path.abspath('encoder_values.xlsx'))
 st.table(df)
 
 
