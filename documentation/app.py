@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='open')
+st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='collapsed')
 
 st.title('MBot Setup')
 
