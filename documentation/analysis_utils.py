@@ -67,6 +67,7 @@ def get_log(runId, name):
     with open(file_path, 'wb') as fd:
         fd.write(r.content)
 
+
 def delete_run(runId):
     '''Delete a run'''
     if isinstance(runId, str):
@@ -75,11 +76,12 @@ def delete_run(runId):
         return -1
     payload = {'runId': runId}
     r = requests.delete(_URL, params=payload)
-    if r.response_code != 200: 
+    if r.status_code != 200:
         print(r.text())
         return -1
     else:
         return 0
+
 
 def post_log(name, path):
     '''pass in path string'''
