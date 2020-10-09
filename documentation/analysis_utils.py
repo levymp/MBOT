@@ -122,7 +122,7 @@ if __name__ == "__main__":
     df = get_df(1)
     if not isinstance(df, int):
         print(df.keys())
-    for i in range(7):
+    for i in range(0):
         if(delete_run(i)):
             print('UHOH' + str(i))
             break
