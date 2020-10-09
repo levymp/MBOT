@@ -7,7 +7,6 @@ _URL = 'https://api.mplevy.com/api/mbot/v1/log'
 #### DEBUG URL DON'T USE
 # _URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
 
-
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
 def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     '''GET A pandas df from MBOT Database and either don't save it or save it (rename directory in that case)'''
@@ -94,7 +93,7 @@ def post_log(name, path):
     # check if correct path
     if not file_path.is_file():
         return -1
-    if name not in ['MICHAEL', 'SAM', 'HAMIL', 'XUN']:
+    if name not in ['MICHAEL', 'SAM', 'HAMIL', 'XUN', '-']:
         return -1
 
     # open file
@@ -123,4 +122,7 @@ if __name__ == "__main__":
     df = get_df(1)
     if not isinstance(df, int):
         print(df.keys())
-    
+    for i in range(7):
+        if(delete_run(i)):
+            print('UHOH' + str(i))
+            break
