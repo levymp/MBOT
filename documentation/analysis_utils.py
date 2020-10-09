@@ -81,7 +81,7 @@ def delete_run(runId):
     else:
         return 0
 
-def post_log(path):
+def post_log(name, path):
     '''pass in path string'''
     # read file
     file_path = Path(path)
@@ -89,25 +89,28 @@ def post_log(path):
     # check if correct path
     if not file_path.is_file():
         return -1
-    
+    if name not in ['MICHAEL', 'SAM', 'HAMIL', 'XUN']:
+        return -1
+
     # open file
     file = open(file_path, 'rb')
 
     # create payload
     payload = {'logfile': file}
+    param = {'name': name}
     # post file
-    r = requests.post(_URL, files=payload)
+    r = requests.post(_URL, params=param, files=payload)
     
     # close file
     file.close()
     if r.status_code != 200: 
-        print(r.text())
+        print(r.text)
         return -1
     else: 
         return r.json()
 
 if __name__ == "__main__":
     import os
-    response = post_log(os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
+    response = post_log('MICHAEL', os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
     print(str(response))
     
