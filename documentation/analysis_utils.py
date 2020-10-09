@@ -124,6 +124,7 @@ if __name__ == "__main__":
         print(df.keys())
 
     delete_run(0)
+    delete_run(1)
     # for i in range(10):
     #     if(delete_run(i)):
     #         print('UHOH' + str(i))
