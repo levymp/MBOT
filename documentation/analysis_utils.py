@@ -2,10 +2,10 @@ import requests
 import pandas as pd
 from pathlib import Path
 
-# _URL = 'https://api.mplevy.com/api/mbot/v1/log'
+_URL = 'https://api.mplevy.com/api/mbot/v1/log'
 
 #### DEBUG URL DON'T USE
-_URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
+# _URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
 
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
 def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
@@ -28,7 +28,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     file_path = Path(name)
 
     # delete if it's already there
-    file_path.unlink(missing_ok=True)
+    # file_path.unlink(missing_ok=True)
     
     # read in content
     with open(file_path, 'wb') as fd:
@@ -39,7 +39,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
 
     # delete file
     if save is False:
-        file_path.unlink(missing_ok=False)
+        file_path.unlink()
     return df
 
 # must give dir/name
@@ -56,7 +56,7 @@ def get_log(runId, name):
     # get the data back unwrapped.
     r = requests.get(_URL, params=payload)
     if r.status_code != 200:
-        # print(r.text())
+        print(r.text())
         return -1
     
     # open file
@@ -68,6 +68,7 @@ def get_log(runId, name):
     # read in content/save
     with open(file_path, 'wb') as fd:
         fd.write(r.content)
+    return 0
 
 
 def delete_run(runId):
@@ -113,19 +114,3 @@ def post_log(name, path):
     else: 
         return r.json()
 
-if __name__ == "__main__":
-    # import os
-    # response = post_log('MICHAEL', os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
-    # print(str(response))
-    # if delete_run(3):
-    #     raise ValueError('UH OH!')
-    # df = get_df(1)
-    # if not isinstance(df, int):
-    #     print(df.keys())
-
-    delete_run(0)
-    # delete_run(1)
-    # for i in range(10):
-    #     if(delete_run(i)):
-    #         print('UHOH' + str(i))
-    #         break
