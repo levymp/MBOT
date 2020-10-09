@@ -8,7 +8,7 @@ from pathlib import Path
 st.title('MBOT ANALYSIS TOOL')
 
 '## MBOT DATABASE'
-mbot_table_path = Path('/home/michaellevy/data/mbot/mbot_table.pkl')
+mbot_table_path = Path('/home/michaellevy/data/prod/mbot/mbot_table.pkl')
 mbot_table = pd.read_pickle(mbot_table_path)
 columns = ['BOT NAME', 'PICKLE NAME', 'LOG NAME']
 st.table(mbot_table[columns])
