@@ -20,7 +20,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     # get the data back unwrapped.
     r = requests.get(_URL, params=payload)
     if r.status_code != 200:
-        print(r.text())
+        # print(r.text())
         return -1
     
     # open file
@@ -55,8 +55,7 @@ def get_log(runId, name):
     # get the data back unwrapped.
     r = requests.get(_URL, params=payload)
     if r.status_code != 200:
-        print(r.status_code)
-        print(r.text())
+        # print(r.text())
         return -1
     
     # open file
@@ -120,5 +119,6 @@ if __name__ == "__main__":
     if delete_run(3):
         raise ValueError('UH OH!')
     df = get_df(1)
-    print(df.keys())
+    if not isinstance(df, int):
+        print(df.keys())
     
