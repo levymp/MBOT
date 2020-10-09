@@ -55,6 +55,7 @@ def get_log(runId, name):
     # get the data back unwrapped.
     r = requests.get(_URL, params=payload)
     if r.status_code != 200:
+        print(r.status_code)
         print(r.text())
         return -1
     
@@ -119,5 +120,5 @@ if __name__ == "__main__":
     if delete_run(3):
         raise ValueError('UH OH!')
     df = get_df(1)
-    print(df.keys)
+    print(df.keys())
     
