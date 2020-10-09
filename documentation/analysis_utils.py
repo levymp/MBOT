@@ -2,8 +2,10 @@ import requests
 import pandas as pd
 from pathlib import Path
 
-# _URL = 'https://api.mplevy.com/api/mbot/v1/log'
-_URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
+_URL = 'https://api.mplevy.com/api/mbot/v1/log'
+
+#### DEBUG URL DON'T USE
+# _URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
 
 
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
@@ -20,7 +22,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     # get the data back unwrapped.
     r = requests.get(_URL, params=payload)
     if r.status_code != 200:
-        # print(r.text())
+        print(r.text())
         return -1
     
     # open file
