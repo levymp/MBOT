@@ -114,17 +114,17 @@ def post_log(name, path):
         return r.json()
 
 if __name__ == "__main__":
-    import os
-    response = post_log('MICHAEL', os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
-    print(str(response))
-    if delete_run(3):
-        raise ValueError('UH OH!')
-    df = get_df(1)
-    if not isinstance(df, int):
-        print(df.keys())
+    # import os
+    # response = post_log('MICHAEL', os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
+    # print(str(response))
+    # if delete_run(3):
+    #     raise ValueError('UH OH!')
+    # df = get_df(1)
+    # if not isinstance(df, int):
+    #     print(df.keys())
 
     delete_run(0)
-    delete_run(1)
+    # delete_run(1)
     # for i in range(10):
     #     if(delete_run(i)):
     #         print('UHOH' + str(i))
