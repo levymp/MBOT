@@ -2,9 +2,17 @@ import sys
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from pathlib import Path
 # from utils.utils import get_lookup
 
 st.title('MBOT ANALYSIS TOOL')
+
+'## Lookup Table'
+mbot_table_path = Path('/home/michaellevy/data/mbot/mbot_table.pkl')
+mbot_table = pd.read_pickle(mbot_table_path)
+columns = ['BOT NAME', 'PICKLE NAME', 'LOG NAME']
+st.table(mbot_table[columns])
+
 
 @st.cache(suppress_st_warning=True)
 def get_df(file_path):
@@ -34,7 +42,7 @@ def get_lookup(df):
     return df_lookup
 
 # get df
-df = get_df("/Users/michaellevy/Desktop/log_test_log_00.pkl")
+df = get_df("/home/michaellevy/data/mbot/pickle/2020_10_08/2020_10_08_21:59:17.pkl")
 
 # get all keys
 df_lookup = get_lookup(df)
