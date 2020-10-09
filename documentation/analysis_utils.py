@@ -5,6 +5,7 @@ from pathlib import Path
 # _URL = 'https://api.mplevy.com/api/mbot/v1/log'
 _URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
 
+
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
 def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     '''GET A pandas df from MBOT Database and either don't save it or save it (rename directory in that case)'''
@@ -36,7 +37,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     df = pd.read_pickle(file_path)
 
     # delete file
-    if save == False:
+    if save is False:
         file_path.unlink(missing_ok=False)
     return df
 
@@ -115,8 +116,8 @@ if __name__ == "__main__":
     import os
     response = post_log('MICHAEL', os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
     print(str(response))
-    r = delete_run(3)
-    print(r.text)
+    if delete_run(3):
+        raise ValueError('UH OH!')
     df = get_df(1)
     print(df.keys)
     
