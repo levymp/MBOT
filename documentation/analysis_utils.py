@@ -74,7 +74,7 @@ def delete_run(runId):
     elif not isinstance(runId, int):
         return -1
     payload = {'runId': runId}
-    r = requests.delete(url, params=payload)
+    r = requests.delete(_URL, params=payload)
     if r.response_code != 200: 
         print(r.text())
         return -1
