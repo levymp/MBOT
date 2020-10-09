@@ -113,4 +113,8 @@ if __name__ == "__main__":
     import os
     response = post_log('MICHAEL', os.path.realpath('../../MBOT-RPI/data/convex_10mx10m_5cm.log'))
     print(str(response))
+    r = delete_run(3)
+    print(r.text)
+    df = get_df(1)
+    print(df.keys)
     
