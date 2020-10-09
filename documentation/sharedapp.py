@@ -14,13 +14,12 @@ columns = ['BOT NAME', 'PICKLE NAME', 'LOG NAME']
 st.table(mbot_table[columns])
 
 
-@st.cache(suppress_st_warning=True)
+
 def get_df(file_path):
     df = pd.read_pickle(file_path)
     return df
 
 # display all keys
-@st.cache(suppress_st_warning=True)
 def get_lookup(df):
     # start
     lookup = {}
@@ -41,54 +40,52 @@ def get_lookup(df):
     # hello
     return df_lookup
 
-# get df
-df = get_df("/home/michaellevy/data/mbot/pickle/2020_10_08/2020_10_08_21:59:17.pkl")
 
-# get all keys
-df_lookup = get_lookup(df)
+# # get all keys
+# df_lookup = get_lookup(df)
 
-'''
-## LCM TYPES USED
-'''
-# display all keys
-df_lookup
+# '''
+# ## LCM TYPES USED
+# '''
+# # display all keys
+# df_lookup
 
-# plotting
-'''
-### Pick your values 
-'''
-keys = list(df.keys())
+# # plotting
+# '''
+# ### Pick your values 
+# '''
+# keys = list(df.keys())
 
-options = st.sidebar.multiselect('PICK CHANNELS TO DISPLAY', keys)
+# options = st.sidebar.multiselect('PICK CHANNELS TO DISPLAY', keys)
 
-def list_keys(keys):
-    stor = []
-    for key in keys:
-        if str(key) != 'timestamp' or str(key) != 'utime':
-            stor.append(key)
-    return tuple(stor)
+# def list_keys(keys):
+#     stor = []
+#     for key in keys:
+#         if str(key) != 'timestamp' or str(key) != 'utime':
+#             stor.append(key)
+#     return tuple(stor)
 
-vals = list_keys(df['MBOT_IMU'].keys())
+# vals = list_keys(df['MBOT_IMU'].keys())
 
 
-# 
-if len(options) == 0: 
-    pass
-elif len(options) == 1:
-    key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
-elif len(options) == 2:
-    key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
-    key2 = st.sidebar.selectbox(keys[1], list_keys(df[options[1]].keys()), key='x2')
-elif len(options) == 3:
-    key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
-    key2 = st.sidebar.selectbox(keys[1], list_keys(df[options[1]].keys()), key='x2')
-    key3 = st.sidebar.selectbox(keys[2], list_keys(df[options[2]].keys()), key='x3')
-else:
-    st.warning('uh oh!! need to add more sidebar options')
+# # 
+# if len(options) == 0: 
+#     pass
+# elif len(options) == 1:
+#     key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
+# elif len(options) == 2:
+#     key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
+#     key2 = st.sidebar.selectbox(keys[1], list_keys(df[options[1]].keys()), key='x2')
+# elif len(options) == 3:
+#     key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
+#     key2 = st.sidebar.selectbox(keys[1], list_keys(df[options[1]].keys()), key='x2')
+#     key3 = st.sidebar.selectbox(keys[2], list_keys(df[options[2]].keys()), key='x3')
+# else:
+#     st.warning('uh oh!! need to add more sidebar options')
 
-# get the plot
-for key in df['MBOT_MOTOR_COMMAND']:
-    if(key != 'timestamp' and key != 'utime'):
-        x = plt.plot(df['MBOT_MOTOR_COMMAND']['timestamp'], df['MBOT_MOTOR_COMMAND'][key], label=key)
-plt.legend()
-st.pyplot()
+# # get the plot
+# for key in df['MBOT_MOTOR_COMMAND']:
+#     if(key != 'timestamp' and key != 'utime'):
+#         x = plt.plot(df['MBOT_MOTOR_COMMAND']['timestamp'], df['MBOT_MOTOR_COMMAND'][key], label=key)
+# plt.legend()
+# st.pyplot()

@@ -26,3 +26,4 @@ python/lcmtypes/*.pyc
 common/bot_defs.h
 test_motors/test_motors.o
 
+documentation/nohup.out
