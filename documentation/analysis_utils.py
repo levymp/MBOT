@@ -55,9 +55,9 @@ def get_table(database):
     if isinstance(database, str):
         return -1
     elif database.lower() == 'prod':
-        payload = {'database' = 'prod'}
+        payload = {'database': 'prod'}
     elif database.lower() == 'backup':
-        payload = {'database' = 'backup'}
+        payload = {'database': 'backup'}
     else:
         return -1
     
