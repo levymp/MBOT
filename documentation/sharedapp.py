@@ -42,10 +42,6 @@ the production database (including deleted runs).
 
 st.warning('PART 1-3 will be documented here... ***updates coming***')
 
-
-
-
-
 # switch on database type
 if switch == 'PRODUCTION':
     '### ***Production***'
@@ -103,7 +99,7 @@ cols.remove('MBOT_TIMESYNC')
 # multi select the channel to view
 selections = st.sidebar.multiselect('',
                                     options=cols,
-                                    default=['SLAM_PARTICLES', 'LIDAR'],
+                    
                                     key='meow1')
 
 
