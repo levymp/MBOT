@@ -2,10 +2,13 @@ import requests
 import pandas as pd
 from pathlib import Path
 
-_URL = 'https://api.mplevy.com/api/mbot/v1/log'
+BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
+
+LOG_URL = BASE_URL + 'log'
+DIRECTORY_URL = BASE_URL + 'directory'
 
 #### DEBUG URL DON'T USE
-# _URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
+# LOG_URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
 
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
 def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
@@ -19,7 +22,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     payload = {'runId': runId, 'type': 'pkl'}
 
     # get the data back unwrapped.
-    r = requests.get(_URL, params=payload)
+    r = requests.get(LOG_URL, params=payload)
     if r.status_code != 200:
         print(r.text())
         return -1
@@ -42,6 +45,42 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
         file_path.unlink()
     return df
 
+def get_table(database):
+    '''GET the lookup table for prod or backup database'''
+    
+    if isinstance(database, str):
+        return -1
+    elif database.lower() == 'prod'
+        payload = {'database' = 'prod'}
+    elif database.lower() == 'backup'
+        payload = {'database' = 'backup'}
+    else:
+        return -1
+    
+    # get the data back unwrapped.
+    r = requests.get(DIRECTORY_URL, params=payload)
+    
+    if r.status_code != 200:
+        print(r.text())
+        return -1
+    
+    # open file
+    file_path = Path(/tmp/mbot_table.pkl)
+
+    # delete if it's already there
+    # file_path.unlink(missing_ok=True)
+    
+    # read in content
+    with open(file_path, 'wb') as fd:
+        fd.write(r.content)
+    
+    # read in df
+    df = pd.read_pickle(file_path)
+
+    # delete file
+    file_path.unlink()
+    return df
+
 # must give dir/name
 def get_log(runId, name):
     '''Give a runId from database and save the log file'''
@@ -54,7 +93,7 @@ def get_log(runId, name):
     payload = {'runId': runId, 'type': 'log'}
 
     # get the data back unwrapped.
-    r = requests.get(_URL, params=payload)
+    r = requests.get(LOG_URL, params=payload)
     if r.status_code != 200:
         print(r.text())
         return -1
@@ -78,7 +117,7 @@ def delete_run(runId):
     elif not isinstance(runId, int):
         return -1
     payload = {'runId': runId}
-    r = requests.delete(_URL, params=payload)
+    r = requests.delete(LOG_URL, params=payload)
     if r.status_code != 200:
         print(r.text())
         return -1
@@ -104,7 +143,7 @@ def post_log(name, path):
     payload = {'logfile': file}
     param = {'name': name}
     # post file
-    r = requests.post(_URL, params=param, files=payload)
+    r = requests.post(LOG_URL, params=param, files=payload)
     
     # close file
     file.close()
