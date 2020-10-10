@@ -2,13 +2,17 @@ import requests
 import pandas as pd
 from pathlib import Path
 
-BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
+# BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
 
+#### DEBUG URL ONLY
+BASE_URL = 'http://127.0.0.1:8505/api/mbot/v1/'
+
+# SPECIFIC URLs
 LOG_URL = BASE_URL + 'log'
 DIRECTORY_URL = BASE_URL + 'directory'
 
-#### DEBUG URL DON'T USE
-# LOG_URL = 'http://127.0.0.1:8505/api/mbot/v1/log'
+
+
 
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
 def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
@@ -152,4 +156,11 @@ def post_log(name, path):
         return -1
     else: 
         return r.json()
+
+
+if __name__ == '__main__':
+    df = get_table('backup')
+
+
+
 
