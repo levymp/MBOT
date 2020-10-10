@@ -8,12 +8,22 @@ def get_tables():
     try:
         prod_table = Path('/home/michaellevy/data/prod/mbot/mbot_table.pkl')
         backup_table = Path('/home/michaellevy/data/backup/mbot/mbot_table.pkl')
-        prod_df = pd.read_pickle(prod_table)
-        backup_df = pd.read_pickle(backup_table)
+        df_prod = pd.read_pickle(prod_table)
+        df_backup = pd.read_pickle(backup_table)
     except Exception:
-        prod_df = utils.get_table('prod')
-        backup_df = utils.get_table('backup')
-    return prod_df, backup_df
+        df_prod = utils.get_table('prod')
+        df_backup = utils.get_table('backup')
+
+    # get custom indexes
+    indexes = (_get_indexes(df_prod), _get_indexes(df_backup))
+
+    return df_prod, df_backup, indexes
+
+
+def _get_indexes(df):
+    index_list = range(len(df))
+    index_list = ["RUN " + str(i) for i in index_list]
+    return index_list
 
 
 # display all keys
@@ -33,24 +43,24 @@ def get_lookup(df):
         # clear values
         values.clear()
     # write to pandas df
-    df_lookup = pd.DataFrame.from_dict(lookup, orient='index')
+    df_keys = pd.DataFrame.from_dict(lookup, orient='index')
 
     # transpose columns
-    df_lookup = df_lookup.transpose()
+    df_keys = df_keys.transpose()
     
     # get weights lookup dictionary
-    weights = dict(zip(df_lookup.keys(), weights))
+    weights = dict(zip(df_keys.keys(), weights))
     
     # get columns
-    cols = list(df_lookup.keys())
+    cols = list(df_keys.keys())
     
     # sort columns
     cols.sort(key=lambda x: weights[x], reverse=True)
     
     # reorder dataframe
-    df_lookup = df_lookup[cols]
+    df_keys = df_keys[cols]
     
-    return df_lookup
+    return df_keys
 
 def file_to_time(df, runId, dateobj=True):
     time = df.loc[runId]['PICKLE NAME'].split('.')[0]
