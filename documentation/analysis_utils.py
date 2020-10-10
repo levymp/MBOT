@@ -1,18 +1,16 @@
 import requests
 import pandas as pd
 from pathlib import Path
-import pickle 
+
 
 _BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
 
-#### DEBUG URL ONLY
+# DEBUG URL ONLY
 # _BASE_URL = 'http://127.0.0.1:8505/api/mbot/v1/'
 
 # SPECIFIC URLs
 _LOG_URL = _BASE_URL + 'log'
 _DIRECTORY_URL = _BASE_URL + 'directory'
-
-
 
 
 # be sure to give dir/name.pkl if you plan to save (and set save=True)
@@ -29,7 +27,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     # get the data back unwrapped.
     r = requests.get(_LOG_URL, params=payload)
     if r.status_code != 200:
-        print(r.text())
+        print(r.text)
         return -1
     
     # open file
@@ -74,19 +72,17 @@ def get_table(database):
     file_path = Path(f'/tmp/mbot_table_{database}.pkl')
 
     # delete if it's already there (not working < 3.8)
-    # file_path.unlink(missing_ok=True)
+    file_path.unlink(missing_ok=True)
     
     # read in content
     with open(file_path, 'wb') as fd:
         fd.write(r.content)
     
-    # obj = pickle.dumps(r.content)
-    # z = pickle.loads(obj)
     # read in df
     df = pd.read_pickle(file_path)
 
     # delete file
-    file_path.unlink()
+    file_path.unlink(missing_ok=True)
     return df
 
 # must give dir/name
