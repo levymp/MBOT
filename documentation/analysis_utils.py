@@ -160,5 +160,8 @@ def post_log(name, path):
 
 if __name__ == '__main__':
     df = get_table('backup')
-    print(df.loc[0])
-    print(df.head())
+    if isinstance(df, int):
+        print(df)
+    else:
+        print(df.loc[0])
+        print(df.head())
