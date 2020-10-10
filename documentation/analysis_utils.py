@@ -3,10 +3,10 @@ import pandas as pd
 from pathlib import Path
 
 
-# _BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
+_BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
 
 # DEBUG URL ONLY
-_BASE_URL = 'http://127.0.0.1:8505/api/mbot/v1/'
+# _BASE_URL = 'http://127.0.0.1:8505/api/mbot/v1/'
 
 # SPECIFIC URLs
 _LOG_URL = _BASE_URL + 'log'
