@@ -159,7 +159,7 @@ def post_log(botname, description, path):
 
 
 def test_get_table():
-    print('\n**********PRODUCTION!**********\n')
+    print('\n**********TEST GET PRODUCTION TABLE!**********\n')
     df = get_table('prod')
     if isinstance(df, int):
         print(df)
@@ -168,7 +168,7 @@ def test_get_table():
         print(df.loc[0])
         print(df.head())
     
-    print('\n**********BACKUP!**********\n')
+    print('\n**********TEST GET BACKUP TABLE!**********\n')
     df = get_table('backup')
     if isinstance(df, int):
         print(df)
@@ -180,7 +180,7 @@ def test_get_table():
 
 
 def test_get_df(runId):
-    print('\n**********GET DF!**********\n')
+    print('\n**********TEST GET DF!**********\n')
     df = get_df(runId)
     if isinstance(df, int):
         print(df)
@@ -191,7 +191,7 @@ def test_get_df(runId):
 
 
 def test_get_log():
-    print('\n**********GET LOG!**********\n')
+    print('\n**********TEST GET LOG!**********\n')
     path = '/tmp/mbot_test.log'
     if not get_log(0, path):
         return 0
@@ -223,7 +223,7 @@ if __name__ == '__main__':
     if not isinstance(results, int):
         r = delete_run(results['runId'])
         if r == 0:
-            print('deleted test run')
+            print('\n********deleted test run********\n')
         else:
-            print('failed to delete test run')
+            print('\n********failed to delete test run*******\n')
 
