@@ -159,10 +159,26 @@ def post_log(name, path):
         return r.json()
 
 
-if __name__ == '__main__':
+def test_get_table():
+    print('PRODUCTION!')
     df = get_table('prod')
     if isinstance(df, int):
         print(df)
+        return -1
     else:
         print(df.loc[0])
         print(df.head())
+    
+    print('BACKUP!')
+    df = get_table('backup')
+    if isinstance(df, int):
+        print(df)
+        return -1
+    else:
+        print(df.loc[0])
+        print(df.head())
+        return 0
+
+
+if __name__ == '__main__':
+    test_get_table()
