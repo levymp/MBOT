@@ -223,7 +223,7 @@ if __name__ == '__main__':
     if not isinstance(results, int):
         r = delete_run(results['runId'])
         if r == 0:
-            print('\n********deleted test run********\n')
+            print('\n********DELETED TEST RUN********\n')
         else:
-            print('\n********failed to delete test run*******\n')
+            print('\n********FAILED TO DELETE TEST RUN*******\n')
 
