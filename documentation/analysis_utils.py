@@ -191,6 +191,7 @@ def test_get_df(runId):
 
 
 def test_get_log():
+    print('\n**********GET LOG!**********\n')
     path = '/tmp/mbot_test.log'
     if not get_log(0, path):
         return 0
@@ -198,6 +199,7 @@ def test_get_log():
         return -1
         
 def test_post_log():
+    print('\n**********TEST POST LOG!**********\n')
     botname = 'test'
     description = 'test'
     path = '../../MBOT-RPI/data/convex_10mx10m_5cm.log'
@@ -217,6 +219,7 @@ if __name__ == '__main__':
 
     # test post log
     results = test_post_log()
+    print('\n**********DELETE LATEST RUN!**********\n')
     if not isinstance(results, int):
         r = delete_run(results['runId'])
         if r == 0:
