@@ -52,7 +52,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
 def get_table(database):
     '''GET the lookup table for prod or backup database'''
     
-    if isinstance(database, str):
+    if not isinstance(database, str):
         return -1
     elif database.lower() == 'prod':
         payload = {'database': 'prod'}
