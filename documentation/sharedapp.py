@@ -124,7 +124,7 @@ for key, channel, selection in zip(key_list, channel_list, selections):
 # selection -> overall channel
 # flag -> sub channel
 for yaxis, channel in zip(yaxes, selections):
-    st.code('utime vs {0}:{1}'.format(channel.replace('_', ' '), yaxis.replace('_', ' ').upper()))
-    plt.plot([df_run[channel]['utime'], df_run[channel][yaxis]])
+    st.code('timestamp vs {0}:{1}'.format(channel.replace('_', ' '), yaxis.replace('_', ' ').upper()))
+    plt.plot([df_run[channel]['timestamp'], df_run[channel][yaxis]])
 # plot data
 st.pyplot()
