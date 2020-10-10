@@ -1,15 +1,16 @@
 import requests
 import pandas as pd
 from pathlib import Path
+import pickle 
 
-# BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
+_BASE_URL = 'https://api.mplevy.com/api/mbot/v1/'
 
 #### DEBUG URL ONLY
-BASE_URL = 'http://127.0.0.1:8505/api/mbot/v1/'
+# _BASE_URL = 'http://127.0.0.1:8505/api/mbot/v1/'
 
 # SPECIFIC URLs
-LOG_URL = BASE_URL + 'log'
-DIRECTORY_URL = BASE_URL + 'directory'
+_LOG_URL = _BASE_URL + 'log'
+_DIRECTORY_URL = _BASE_URL + 'directory'
 
 
 
@@ -26,7 +27,7 @@ def get_df(runId, name='/tmp/mbot_temp.pkl', save=False):
     payload = {'runId': runId, 'type': 'pkl'}
 
     # get the data back unwrapped.
-    r = requests.get(LOG_URL, params=payload)
+    r = requests.get(_LOG_URL, params=payload)
     if r.status_code != 200:
         print(r.text())
         return -1
@@ -62,7 +63,7 @@ def get_table(database):
         return -1
     
     # get the data back unwrapped.
-    r = requests.get(DIRECTORY_URL, params=payload)
+    r = requests.get(_DIRECTORY_URL, params=payload)
     
     if r.status_code != 200:
         print(r.status_code)
@@ -70,15 +71,17 @@ def get_table(database):
         return -1
     
     # open file
-    file_path = Path('/tmp/mbot_table.pkl')
+    file_path = Path(f'/tmp/mbot_table_{database}.pkl')
 
-    # delete if it's already there
+    # delete if it's already there (not working < 3.8)
     # file_path.unlink(missing_ok=True)
     
     # read in content
     with open(file_path, 'wb') as fd:
         fd.write(r.content)
     
+    # obj = pickle.dumps(r.content)
+    # z = pickle.loads(obj)
     # read in df
     df = pd.read_pickle(file_path)
 
@@ -98,7 +101,7 @@ def get_log(runId, dir_name):
     payload = {'runId': runId, 'type': 'log'}
 
     # get the data back unwrapped.
-    r = requests.get(LOG_URL, params=payload)
+    r = requests.get(_LOG_URL, params=payload)
     if r.status_code != 200:
         print(r.text())
         return -1
@@ -122,7 +125,7 @@ def delete_run(runId):
     elif not isinstance(runId, int):
         return -1
     payload = {'runId': runId}
-    r = requests.delete(LOG_URL, params=payload)
+    r = requests.delete(_LOG_URL, params=payload)
     if r.status_code != 200:
         print(r.text())
         return -1
@@ -147,7 +150,7 @@ def post_log(botname, description, path):
     payload = {'logfile': file}
     param = {'name': botname, 'description': description}
     # post file
-    r = requests.post(LOG_URL, params=param, files=payload)
+    r = requests.post(_LOG_URL, params=param, files=payload)
     
     # close file
     file.close()

@@ -3,28 +3,40 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
-# from utils.utils import get_lookup
+import analysis_utils as utils
 
-st.title('MBOT ANALYSIS TOOL')
+st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='collapsed')
+st.title('MBOT Database, Analysis, and Report')
+
+# if on linux box it will just grab file... if running locally will use api
+# try:
+#     prod_table = Path('/home/michaellevy/data/prod/mbot/mbot_table.pkl')
+#     backup_table = Path('/home/michaellevy/data/backup/mbot/mbot_table.pkl')
+#     prod_df = pd.read_pickle(prod_table)
+#     backup_df = pd.read_pickle(backup_table)
+# except:
+prod_df = utils.get_table('prod')
+backup_df = utils.get_table('backup')
+
 
 '## MBOT DATABASE'
-'### Production'
-mbot_table_path = Path('/home/michaellevy/data/prod/mbot/mbot_table.pkl')
-mbot_table = pd.read_pickle(mbot_table_path)
+
+# set desired columns
 columns = ['BOT NAME', 'PICKLE NAME', 'LOG NAME', 'DESCRIPTION']
-st.table(mbot_table[columns])
-'## MBOT DATABASE'
-'### Backup'
-mbot_table_path = Path('/home/michaellevy/data/backup/mbot/mbot_table.pkl')
-mbot_table = pd.read_pickle(mbot_table_path)
-columns = ['BOT NAME', 'PICKLE NAME', 'LOG NAME', 'DESCRIPTION']
-st.table(mbot_table[columns])
+switch = st.radio(
+    'What Database would you like to view?',
+    ('PRODUCTION', 'BACKUP'),
+    index=0,
+    key='1f2'
+)
 
+if switch == 'PRODUCTION':
+    '### ***Production***'
+    st.write(prod_df[columns])
+else:
+    '### ***Backup***'
+    st.write(backup_df[columns])
 
-
-def get_df(file_path):
-    df = pd.read_pickle(file_path)
-    return df
 
 # display all keys
 def get_lookup(df):
