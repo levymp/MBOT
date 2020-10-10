@@ -160,7 +160,7 @@ def post_log(name, path):
 
 
 if __name__ == '__main__':
-    df = get_table('backup')
+    df = get_table('prod')
     if isinstance(df, int):
         print(df)
     else:
