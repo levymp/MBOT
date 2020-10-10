@@ -87,7 +87,7 @@ def get_table(database):
     return df
 
 # must give dir/name
-def get_log(runId, name):
+def get_log(runId, dir_name):
     '''Give a runId from database and save the log file'''
     if isinstance(runId, str):
         runId = int(runId)
@@ -104,7 +104,7 @@ def get_log(runId, name):
         return -1
     
     # open file
-    file_path = Path(name)
+    file_path = Path(dir_name)
 
     # delete if it's already there
     file_path.unlink(missing_ok=True)
@@ -130,7 +130,7 @@ def delete_run(runId):
         return 0
 
 
-def post_log(name, path):
+def post_log(botname, description, path):
     '''pass in path string'''
     # read file
     file_path = Path(path)
@@ -138,15 +138,14 @@ def post_log(name, path):
     # check if correct path
     if not file_path.is_file():
         return -1
-    if name not in ['MICHAEL', 'SAM', 'HAMIL', 'XUN', '-']:
-        return -1
+
 
     # open file
     file = open(file_path, 'rb')
 
     # create payload
     payload = {'logfile': file}
-    param = {'name': name}
+    param = {'name': botname, 'description': description}
     # post file
     r = requests.post(LOG_URL, params=param, files=payload)
     
@@ -160,7 +159,7 @@ def post_log(name, path):
 
 
 def test_get_table():
-    print('PRODUCTION!')
+    print('\n**********PRODUCTION!**********\n')
     df = get_table('prod')
     if isinstance(df, int):
         print(df)
@@ -169,7 +168,7 @@ def test_get_table():
         print(df.loc[0])
         print(df.head())
     
-    print('BACKUP!')
+    print('\n**********BACKUP!**********\n')
     df = get_table('backup')
     if isinstance(df, int):
         print(df)
@@ -180,5 +179,44 @@ def test_get_table():
         return 0
 
 
+def test_get_df(runId):
+    print('\n**********GET DF!**********\n')
+    df = get_df(runId)
+    if isinstance(df, int):
+        print(df)
+        return -1
+    else:
+        print(df.keys())
+        return 0
+
+
+def test_get_log():
+    path = '/tmp/mbot_test.log'
+    if not get_log(0, path):
+        return 0
+    else:
+        return -1
+        
+def test_post_log():
+    botname = 'test'
+    description = 'test'
+    path = '../../MBOT-RPI/data/convex_10mx10m_5cm.log'
+    results = post_log(botname, description, path)
+    print(results)
+    return 0
+        
+
+
 if __name__ == '__main__':
+    # test lookup table
     test_get_table()
+    
+    # test get df
+    test_get_df(0)
+
+    # test get log
+    test_get_log()
+
+    # test post log
+    test_post_log()
+
