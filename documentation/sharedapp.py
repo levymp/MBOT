@@ -11,7 +11,7 @@ from random import random
 # Set Page Config and Title
 st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='expanded')
 st.title('MBOT Database, Analysis, and Report')
-# st.set_option('deprecation.showPyplotGlobalUse', False)
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # if on linux box it will just grab file... if running locally will use api
 df_prod, df_backup = app_utils.get_tables()
