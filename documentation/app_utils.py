@@ -60,4 +60,10 @@ def file_to_time(df, runId, dateobj=True):
     else:
         return time.strftime('%Y-%m-%d-%H:%M:%S')
 
-
+def get_dropdown_list(series):
+    '''Given pandas series return list w/out None and timestamp/utime'''
+    series = series.dropna()
+    series = series.tolist()
+    series.remove('timestamp')
+    series.remove('utime')
+    return series
