@@ -11,6 +11,7 @@ from random import random
 # Set Page Config and Title
 st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='expanded')
 st.title('MBOT Database, Analysis, and Report')
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # if on linux box it will just grab file... if running locally will use api
 df_prod, df_backup = app_utils.get_tables()
@@ -26,7 +27,7 @@ st.sidebar.warning('You can only view runs in the ***production*** database!')
 switch = st.sidebar.radio('Database',
                         options=('PRODUCTION', 'BACKUP'),
                         index=0,
-                        key=str(random()))
+                        key='x1')
 
 # switch on database type
 if switch == 'PRODUCTION':
@@ -43,7 +44,7 @@ st.sidebar.write('### SELECT RUN TO ANALYZE')
 runId = st.sidebar.selectbox('RUN',
                             range(len(df_prod)),
                             index=0,
-                            key=str(random()))
+                            key='xy2')
 
 # get df to analyze
 df_run = utils.get_df(runId)
@@ -77,41 +78,36 @@ cols.remove('MBOT_TIMESYNC')
 # multi select the channel to view
 selections = st.sidebar.multiselect('CHANNELS',
                                     options=cols,
-                                    default=['LIDAR', 'MBOT_MOTOR_COMMAND'],
-                                     key=str(random()))
+                                    default=['SLAM_PARTICLES', 'LIDAR'],
+                                    key='meow1')
 
 
-# get parsed down list of option
+# get parsed down list of options
 channel_list = []
 for selection in selections:
     channel_list.append(app_utils.get_dropdown_list(df_keys[selection]))
 
-channel_list
-meow = []
+key_list = ['12', '123', '1234', '1234']
 
-for selection, channel in zip(selections, channel_list):
-    meow.append(st.sidebar.selectbox(selection, channel, key=str(random())))
+number_channels = len(channel_list)
+yaxes = []
+for key, channel, selection in zip(key_list, channel_list, selections):
+    yaxes.append(st.sidebar.selectbox(selection, options=channel, key=key))
+
+### get plot
+# selection -> overall channel
+# flag -> sub channel
+for yaxis, channel in zip(yaxes, selections):
+    st.write(yaxis)
+    plt.plot([df_run[channel]['utime'], df_run[channel][yaxis]])
+    
+# fig = plt.show()
+st.pyplot()
 
 
 
-
-# if len(selections) == 0:
-#     pass
-# elif len(selections) == 1:
-#     key1 = st.sidebar.selectbox(selections[0], series, key='x1')
-# elif len(selections) == 2:
-#     key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
-#     key2 = st.sidebar.selectbox(keys[1], list_keys(df[options[1]].keys()), key='x2')
-# elif len(selections) == 3:
-#     key1 = st.sidebar.selectbox(options[0], list_keys(df[options[0]].keys()), key='x1')
-#     key2 = st.sidebar.selectbox(keys[1], list_keys(df[options[1]].keys()), key='x2')
-#     key3 = st.sidebar.selectbox(keys[2], list_keys(df[options[2]].keys()), key='x3')
-# else:
-#     st.warning('uh oh!! need to add more sidebar options')
-
-# # get the plot
-# for key in df['MBOT_MOTOR_COMMAND']:
+# for key in df_run['MBOT_MOTOR_COMMAND']:
 #     if(key != 'timestamp' and key != 'utime'):
-#         x = plt.plot(df['MBOT_MOTOR_COMMAND']['timestamp'], df['MBOT_MOTOR_COMMAND'][key], label=key)
+#         x = plt.plot(df['MBOT_MOTOR_COMMAND']['timestamp'], df_run['MBOT_MOTOR_COMMAND'][key], label=key)
 # plt.legend()
 # st.pyplot()
