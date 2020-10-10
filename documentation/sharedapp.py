@@ -19,7 +19,7 @@ df_prod, df_backup = app_utils.get_tables()
 '## MBOT DATABASE'
 
 # set desired columns
-columns = ['BOT NAME', 'PICKLE NAME', 'LOG NAME', 'DESCRIPTION']
+columns = ['BOT NAME', 'DATE', 'DESCRIPTION']
 
 
 st.sidebar.warning('You can only view runs in the ***production*** database!')
