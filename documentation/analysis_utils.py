@@ -202,9 +202,7 @@ def test_post_log():
     description = 'test'
     path = '../../MBOT-RPI/data/convex_10mx10m_5cm.log'
     results = post_log(botname, description, path)
-    print(results)
-    return 0
-        
+    return results
 
 
 if __name__ == '__main__':
@@ -218,5 +216,11 @@ if __name__ == '__main__':
     test_get_log()
 
     # test post log
-    test_post_log()
+    results = test_post_log()
+    if not isinstance(results, int):
+        r = delete_run(results['runId'])
+        if r == 0:
+            print('deleted test run')
+        else:
+            print('failed to delete test run')
 
