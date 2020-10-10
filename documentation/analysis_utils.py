@@ -65,7 +65,8 @@ def get_table(database):
     r = requests.get(DIRECTORY_URL, params=payload)
     
     if r.status_code != 200:
-        print(r.text())
+        print(r.status_code)
+        print(r.text)
         return -1
     
     # open file
