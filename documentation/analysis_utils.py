@@ -54,9 +54,9 @@ def get_table(database):
     
     if isinstance(database, str):
         return -1
-    elif database.lower() == 'prod'
+    elif database.lower() == 'prod':
         payload = {'database' = 'prod'}
-    elif database.lower() == 'backup'
+    elif database.lower() == 'backup':
         payload = {'database' = 'backup'}
     else:
         return -1
@@ -69,7 +69,7 @@ def get_table(database):
         return -1
     
     # open file
-    file_path = Path(/tmp/mbot_table.pkl)
+    file_path = Path('/tmp/mbot_table.pkl')
 
     # delete if it's already there
     # file_path.unlink(missing_ok=True)
