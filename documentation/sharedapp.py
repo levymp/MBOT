@@ -6,8 +6,7 @@ import analysis_utils as utils
 import app_utils
 from datetime import datetime
 from random import random
-
-
+from part1 import part1
 # Set Page Config and Title
 st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='expanded')
 st.title('MBOT Database, Analysis, and Report')
@@ -39,9 +38,10 @@ This is an easy way to visualize the data that is being posted from the [MBOT AP
 This API parses log files sent after each of our teams robots finishes driving. The production database stores all of our 
 data that is important and we keep it *relatively* organized. Our backup database shows ***everything*** that has been sent to 
 the production database (including deleted runs). 
-
-
 '''
+
+st.warning('PART 1-3 will be documented here... ***updates coming***')
+
 
 
 
@@ -52,9 +52,12 @@ if switch == 'PRODUCTION':
     st.dataframe(df_prod.assign(hack=indexes[0]).set_index('hack')[display_columns])
 else:
     '### ***Backup***'
-    st.sidebar.warning('*THIS IS ONLY TO VIEW BACKUP TABLE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
+    st.sidebar.error('*THIS IS ONLY TO VIEW BACKUP TABLE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
     st.dataframe(df_backup.assign(hack=indexes[1]).set_index('hack')[display_columns])
 
+
+
+# # # # # # ## # SIDE BAR
 # get runId of interest
 st.sidebar.write('### RUN TO ANALYZE')
 runId = st.sidebar.selectbox('',
@@ -80,6 +83,10 @@ st.code(date)
 # get lookup table
 df_keys = app_utils.get_lookup(df_run)
 
+
+
+
+# # # # ## # # MAIN PAGE
 '''### ***LCM Channels of Selected File***'''
 
 # Show keys w/blank lines
