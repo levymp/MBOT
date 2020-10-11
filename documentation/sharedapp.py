@@ -8,7 +8,7 @@ import app_utils
 from datetime import datetime
 from random import random
 from part1 import part1
-import plotly.express as px
+# import plotly.express as px
 
 
 # Set Page Config and Title
