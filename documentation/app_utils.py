@@ -77,3 +77,10 @@ def get_dropdown_list(series):
     series.remove('timestamp')
     series.remove('utime')
     return series
+
+def shift(time_list, time=False):
+    if time:
+        return [(time - time_list[0])*1e-6 for time in time_list]
+    else:
+        return [(time - time_list[0]) for time in time_list]
+

@@ -56,7 +56,7 @@ st.video('https://www.youtube.com/watch?v=XQGEAMSEiGs')
 '''
 
 
-df = pd.read_excel(os.path.abspath('encoder_values.xlsx'))
+df = pd.read_excel(os.path.abspath('./static/data/encoder_values.xlsx'))
 st.table(df)
 
 
