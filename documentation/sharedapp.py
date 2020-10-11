@@ -1,20 +1,12 @@
-import streamlit as st
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from pathlib import Path
 import analysis_utils as utils
+import streamlit as st
 import app_utils
-from datetime import datetime
-from random import random
-from part1 import part1
-# import plotly.express as px
 
 
 # Set Page Config and Title
 st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='expanded')
 st.title('MBOT Database, Analysis, and Report')
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # get production and backup database values
 df_prod, df_backup, indexes = app_utils.get_tables()
@@ -22,7 +14,14 @@ df_prod, df_backup, indexes = app_utils.get_tables()
 # get all columns from data from
 columns = ['BOT NAME', 'PICKLE NAME', 'PICKLE PATH', 'LOG NAME', 'LOG PATH', 'DATE', 'DESCRIPTION']
 
-# # # # # # # # SIDEBAR
+
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # SIDEBAR --> DECIDE DATABASE # # # # # # # # # # # # # # # # # # # # # # # 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 st.sidebar.write('### DATA TO DISPLAY')
 display_columns = st.sidebar.multiselect('',
                                     options=columns,
@@ -35,9 +34,16 @@ switch = st.sidebar.radio('',
                         index=0,
                         key='x1')
 
-# # # # # # # # MAIN PAGE
-'## **MBOT DATABASE**'
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # MAIN PAGE --> DATABASE # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+
 '''
+## **MBOT DATABASE**
 This is an easy way to visualize the data that is being posted from the [MBOT API](https://api.mplevy.com/api/). 
 This API parses log files sent after each of our teams robots finishes driving. The production database stores all of our 
 data that is important and we keep it *relatively* organized. Our backup database shows ***everything*** that has been sent to 
@@ -57,12 +63,18 @@ else:
 
 
 
-# # # # # # ## # SIDE BAR
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # SIDEBAR --> PICK RUN # # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 # get runId of interest
 st.sidebar.write('### RUN TO ANALYZE')
 runId = st.sidebar.selectbox('',
                             range(len(df_prod)),
-                            index=0,
+                            index=1,
                             key='xy2')
 
 # get df to analyze
@@ -86,15 +98,28 @@ df_keys = app_utils.get_lookup(df_run.copy())
 
 
 
-# # # # ## # # MAIN PAGE
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # MAIN PAGE --> SHOW KEYS FOR FILE # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 '''### ***LCM Channels of Selected File***'''
 
 # Show keys w/blank lines
 st.dataframe(df_keys.replace({None:''}).assign(hack='').set_index('hack'))
 
 
-# plotting
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # SIDEBAR --> PLOTTING # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
 st.sidebar.write('''### LCM CHANNELS''')
+
 # Get all columns and remove time sync
 cols = df_keys.keys()
 cols = list(cols)
@@ -111,8 +136,10 @@ channel_list = []
 for selection in selections:
     channel_list.append(app_utils.get_dropdown_list(df_keys[selection]))
 
+# random keys for selections
 key_list = ['12', '123', '1234', '1234']
 
+# Get selection from user
 number_channels = len(channel_list)
 yaxes = []
 for key, channel, selection in zip(key_list, channel_list, selections):
@@ -124,73 +151,69 @@ for key, channel, selection in zip(key_list, channel_list, selections):
 
 
 
+# selection -> overall channel
+# flag -> sub channel
+
+# colors
+palette = plt.get_cmap('Set1')
+
+# amount of selections
+rows = len(selections)
+
+# stop if user hasn't selected channel
+if rows:
+    fig, axes = plt.subplots(rows, 1)
+else:
+    '## ***Select channel(s) on sidebar to view data!***'
+    st.stop()
+
+# set font size based on amount of subplots
+if rows == 1:
+    font = 12
+elif rows == 2:
+    font = 9
+elif rows == 3:
+    font = 7
+else:
+    font = 4
+
 
 '### **PLOT OF RUN FOR ALL DATA SELECTED**'
 '#### LEGEND'
 
+# keys for select box (wont need all of these)
+key_list = ['123lksdjf', '019283091', '10923091283']
 
-### GET THE POT
-# selection -> overall channel
-# flag -> sub channel
-
-# plt.style.use('seaborn-darkgrid')
-
-palette = plt.get_cmap('Set1')
-count = 1
-rows = len(selections)
-fig, axes = plt.subplots(rows, 1)
-
-
-for yaxis, channel, axis in zip(yaxes, selections, axes):
-    # display what is being plotted
-    st.code('timestamp vs {0}:{1}'.format(channel.replace('_', ' '), yaxis.replace('_', ' ').upper()))
-    
+# i -> index for plots, channel -> user selected channel, yaxis -> value of interest from channel
+for yaxis, channel, i in zip(yaxes, selections, range(rows)):
     # label
-    label = '{0}:{1}'.format(channel.replace('_', ' '), yaxis.replace('_', ' ').upper())
-    
+    label = '{0} : {1}'.format(channel.replace('_', ' '), yaxis.replace('_', ' ').upper())
+
+    # display what is being plotted
+    st.code(f'TIMESTAMP VS {label}', language='c++')
+
     # time (shifted from zero)
     time = app_utils.shift(df_run[channel]['timestamp'], time=True)
 
-    # # y value (shifted)
-    y = app_utils.shift(df_run[channel][yaxis], time=False)
-    
-    # plt dataframe
-    # plt.plot(time, y, color=palette(count), linewidth=1.5, alpha=0.9, label=f'{channel}-{yaxis}')
+    # # y value (shifted) and if it's a list get the user to decide what axis to show
+    try:
+        y = app_utils.shift(df_run[channel][yaxis], time=False)
+    except Exception:
+        indx = st.sidebar.selectbox(label + ' CHOOSE DOF!',
+                                    options=range(len(df_run[channel][yaxis][0])), 
+                                    index=0,
+                                    key=key_list[i])
+        y = app_utils.shift([x[indx] for x in df_run['MBOT_IMU']['gyro']], time=False)
 
-    axis.set_xlabel('TIME (s)')
-    axis.set_ylabel(label, color=palette(count))
-    axis.plot(time, y, color=palette(count))
-    # axes[i].tick_params(axis='y', labelcolor=palette(count))
+    # if > 1 selection use list otherwise use a single axis
+    try:
+        axes[i].set_xlabel('TIME (s)')
+        axes[i].set_ylabel(label, color=palette(i), fontsize=font)
+        axes[i].plot(time, y, color=palette(i))
+    except Exception:
+        axes.set_xlabel('TIME (s)')
+        axes.set_ylabel(label, color=palette(i), fontsize=font)
+        axes.plot(time, y, color=palette(i))
 
-    # change pallette count
-    count += 1
-
+# plot subplot
 st.pyplot(fig)
-
-# Create some mock data
-
-
-
-
-# axes.append(ax1.twinx())   # instantiate a second axes that shares the same x-axis
-
-
-# ax2.set_ylabel('sin', color=color)  # we already handled the x-label with ax1
-# ax2.plot(t, data2, color=color)
-# ax2.tick_params(axis='y', labelcolor=color)
-
-# fig.tight_layout()  # otherwise the right y-label is slightly clipped
-
-
-
-
-
-
-
-
-
-# write to figure
-# fig = px.line(all_df[0], x='time', y=yaxes, title="time vs. " + yaxis)
-
-# display figure
-# st.plotly_chart(fig)
