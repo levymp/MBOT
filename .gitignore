@@ -18,6 +18,9 @@ drive_simple_encoder/*.o
 drive_simple/*.o
 /test_motors/*.o
 
+# ignore nohup
+documentation/nohup
+
 # ignore cache files
 documentation/__pycache__
 

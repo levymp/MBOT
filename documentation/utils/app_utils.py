@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 from datetime import datetime
-import analysis_utils as utils
+import api_utils as utils
 
 
 def get_tables():

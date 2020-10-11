@@ -1,18 +1,44 @@
 import matplotlib.pyplot as plt
-import analysis_utils as utils
+import sys
 import streamlit as st
+
+sys.path.append('utils')
+import api_utils as utils
 import app_utils
 
 
 # Set Page Config and Title
 st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', initial_sidebar_state='expanded')
-st.title('MBOT Database, Analysis, and Report')
+st.title('MBOT Database & Analysis')
 
 # get production and backup database values
 df_prod, df_backup, indexes = app_utils.get_tables()
 
 # get all columns from data from
 columns = ['BOT NAME', 'PICKLE NAME', 'PICKLE PATH', 'LOG NAME', 'LOG PATH', 'DATE', 'DESCRIPTION']
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# # # # # # # # # # # # # # # # # # # MAIN PAGE --> PART 1 # # # # # # # # # # # # # # # # # # # # # # # # # # 
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# '''
+# # PART 1
+# ## 1.1 Characterize Wheel Speed
+
+
+# ## 1.2  Wheel Speed Controller
+
+# #### Describe your wheel speed controllers
+
+
+# #### Table of Parameters
+# Give a table of parameters (gains, filter parameters etc.) for the wheel speed controllers.
+
+# '''
+
+
 
 
 
@@ -40,7 +66,6 @@ switch = st.sidebar.radio('',
 # # # # # # # # # # # # # # # # # # # MAIN PAGE --> DATABASE # # # # # # # # # # # # # # # # # # # # # # # # # # 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
 
 '''
 ## **MBOT DATABASE**
@@ -164,7 +189,7 @@ rows = len(selections)
 if rows:
     fig, axes = plt.subplots(rows, 1)
 else:
-    '## ***Select channel(s) on sidebar to view data!***'
+    st.warning('## ***Select channel(s) on sidebar to view data!***')
     st.stop()
 
 # set font size based on amount of subplots
