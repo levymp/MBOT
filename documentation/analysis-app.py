@@ -86,7 +86,7 @@ if not len(df):
     st.error('***NO RESULTS SET A NEW DATE RANGE!***')
     st.stop()
 elif switch == 'BACKUP':
-    st.error('*THIS IS ONLY TO VIEW THE BACKUP TABLE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
+    st.error('*THIS IS ONLY TO VIEW THE BACKUP DATABASE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
     st.stop()
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
