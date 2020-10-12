@@ -35,3 +35,5 @@ test_motors/test_motors.o
 documentation/nohup.out
 documentation/utils/__pycache__/api_utils.cpython-38.pyc
 documentation/utils/__pycache__/app_utils.cpython-38.pyc
+java/
+.gitignore
