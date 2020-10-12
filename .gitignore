@@ -21,6 +21,9 @@ drive_simple/*.o
 # ignore nohup
 documentation/nohup
 
+documentation/utils/__pycache__/*
+
+
 # ignore cache files
 documentation/__pycache__
 
