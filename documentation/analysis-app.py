@@ -63,7 +63,7 @@ if switch == 'PRODUCTION':
 else:
     '### ***BACKUP DATABASE***'
     df, botnames = app_utils.get_df('backup')
-    st.sidebar.error('*THIS IS ONLY TO VIEW BACKUP TABLE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
+    
 
 # get desired date range
 st.sidebar.write('### DATE RANGE')
@@ -79,9 +79,16 @@ df = app_utils.filter_df(df, dates, botname)
 # write df (prod or backup)
 st.dataframe(df.assign(hack=df['Runs']).set_index('hack')[display_columns])
 
+
+
+# stop if no results or on backup database
 if not len(df):
     st.error('***NO RESULTS SET A NEW DATE RANGE!***')
     st.stop()
+elif switch == 'BACKUP':
+    st.error('*THIS IS ONLY TO VIEW THE BACKUP TABLE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
+    st.stop()
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # # # # # # # # # # # # # # # # # # # SIDEBAR --> PICK RUN # # # # # # # # # # # # # # # # # # # # # # # # # # # 
