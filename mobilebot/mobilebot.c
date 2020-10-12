@@ -65,7 +65,9 @@ int main(){
 	if(rc_mpu_initialize_dmp(&imu_data, imu_config)){
 		fprintf(stderr,"ERROR: can't talk to IMU! Exiting.\n");
 		return -1;
-	}
+	}else{
+        printf("calibrated IMU...")
+    }
 
 	//initialize state mutex
     pthread_mutex_init(&state_mutex, NULL);

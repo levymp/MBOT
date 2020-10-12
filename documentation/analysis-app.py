@@ -12,7 +12,7 @@ st.beta_set_page_config(page_title='MBOT', page_icon="🚀", layout='centered', 
 st.title('MBOT Database & Analysis')
 
 # get production and backup database values
-df_prod, df_backup, indexes = app_utils.get_tables()
+
 
 # get all columns from data from
 columns = ['BOT NAME', 'PICKLE NAME', 'PICKLE PATH', 'LOG NAME', 'LOG PATH', 'DATE', 'DESCRIPTION']
@@ -24,17 +24,22 @@ columns = ['BOT NAME', 'PICKLE NAME', 'PICKLE PATH', 'LOG NAME', 'LOG PATH', 'DA
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-st.sidebar.write('### DATA TO DISPLAY')
-display_columns = st.sidebar.multiselect('',
-                                    options=columns,
-                                    default=['BOT NAME', 'DATE', 'DESCRIPTION'],
-                                    key='me4123')
 
-st.sidebar.write('### DATABASE')
+st.sidebar.write('## DATABASE')
+
+# Decide Database
 switch = st.sidebar.radio('',
                         options=('PRODUCTION', 'BACKUP'),
                         index=0,
                         key='x1')
+
+st.sidebar.write('### COLUMNS TO DISPLAY')
+
+# Decide Columns to display
+display_columns = st.sidebar.multiselect('',
+                                    options=columns,
+                                    default=['BOT NAME', 'DATE', 'DESCRIPTION'],
+                                    key='me4123')
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -51,20 +56,32 @@ data that is important and we keep it *relatively* organized. Our backup databas
 the production database (including deleted runs). 
 '''
 
-st.warning('PART 1-3 will be documented here... ***updates coming***')
-
 # switch on database type
 if switch == 'PRODUCTION':
-    '### ***Production***'
-    st.dataframe(df_prod.assign(hack=indexes[0]).set_index('hack')[display_columns])
+    '### ***PRODUCTION DATABASE***'
+    df, botnames = app_utils.get_df('prod')
 else:
-    '### ***Backup***'
+    '### ***BACKUP DATABASE***'
+    df, botnames = app_utils.get_df('backup')
     st.sidebar.error('*THIS IS ONLY TO VIEW BACKUP TABLE YOU* ***CANNOT*** *ANALYZE BACKUP DATA!*')
-    st.dataframe(df_backup.assign(hack=indexes[1]).set_index('hack')[display_columns])
+
+# get desired date range
+st.sidebar.write('### DATE RANGE')
+dates = st.sidebar.date_input('', value=[df.loc[0]['DATETIME'], df.loc[len(df)-1]['DATETIME']])
+
+# get desired bot name
+st.sidebar.write('### CHOOSE A ROBOT NAME')
+botname = st.sidebar.selectbox('', options=botnames, index=0)
+
+df = app_utils.filter_df(df, dates, botname)
 
 
+# write df (prod or backup)
+st.dataframe(df.assign(hack=df['Runs']).set_index('hack')[display_columns])
 
-
+if not len(df):
+    st.error('***NO RESULTS SET A NEW DATE RANGE!***')
+    st.stop()
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # # # # # # # # # # # # # # # # # # # SIDEBAR --> PICK RUN # # # # # # # # # # # # # # # # # # # # # # # # # # # 
@@ -73,31 +90,42 @@ else:
 
 # get runId of interest
 st.sidebar.write('### RUN TO ANALYZE')
-runId = st.sidebar.selectbox('',
-                            range(len(df_prod)),
-                            index=1,
+try:
+    runId = st.sidebar.selectbox('',
+                            list(df['Runs']),
+                            index=0,
                             key='xy2')
+except Exception as e:
+    runId = 0
 
-# get df to analyze
+# reformat runId
+runId = runId.replace('RUN ', '')
+runId = int(runId)
+
+
+# get df to analyze from runId
 df_run = utils.get_df(runId)
 
-'## ***Selected Run to Analyze***'
-'#### Robot Name'
-st.code(df_prod.loc[runId]['BOT NAME'])
 
-'#### Description'
-st.code(df_prod.loc[runId]['DESCRIPTION'])
+'## ***SELECTED RUN TO ANALYZE***'
+'#### ROBOT NAME'
+# try:
+st.code(df.loc[runId]['BOT NAME'])
+# except Exception:
+#     st.error('CHOOSE A VALID RUN ID')
+#     st.stop()
 
-'#### Date'
-date = app_utils.file_to_time(df_prod, runId, dateobj=False)
+
+'#### DESCRIPTION'
+st.code(df.loc[runId]['DESCRIPTION'])
+
+'#### DATE'
+date = app_utils.file_to_time(df, runId, dateobj=False)
 st.code(date)
 
 
 # get lookup table
 df_keys = app_utils.get_lookup(df_run.copy())
-
-
-
 
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -106,7 +134,7 @@ df_keys = app_utils.get_lookup(df_run.copy())
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
-'''### ***LCM Channels of Selected File***'''
+'''### ***LCM CHANNELS OF SELECTED RUN***'''
 
 # Show keys w/blank lines
 st.dataframe(df_keys.replace({None:''}).assign(hack='').set_index('hack'))
@@ -165,7 +193,7 @@ rows = len(selections)
 if rows:
     fig, axes = plt.subplots(rows, 1)
 else:
-    st.warning('## ***Select channel(s) on sidebar to view data!***')
+    st.warning('## ***SELECT A CHANNEL TO VIEW ON THE SIDEBAR!***')
     st.stop()
 
 # set font size based on amount of subplots
@@ -217,4 +245,5 @@ for yaxis, channel, i in zip(yaxes, selections, range(rows)):
         axes.plot(time, y, color=palette(i))
 
 # plot subplot
+'#### PLOT'
 st.pyplot(fig)
