@@ -17,30 +17,6 @@ df_prod, df_backup, indexes = app_utils.get_tables()
 # get all columns from data from
 columns = ['BOT NAME', 'PICKLE NAME', 'PICKLE PATH', 'LOG NAME', 'LOG PATH', 'DATE', 'DESCRIPTION']
 
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-# # # # # # # # # # # # # # # # # # # MAIN PAGE --> PART 1 # # # # # # # # # # # # # # # # # # # # # # # # # # 
-
-# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
-
-# '''
-# # PART 1
-# ## 1.1 Characterize Wheel Speed
-
-
-# ## 1.2  Wheel Speed Controller
-
-# #### Describe your wheel speed controllers
-
-
-# #### Table of Parameters
-# Give a table of parameters (gains, filter parameters etc.) for the wheel speed controllers.
-
-# '''
-
-
-
-
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
