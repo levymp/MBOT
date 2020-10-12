@@ -1,29 +1,52 @@
 from pathlib import Path
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import api_utils as utils
 
-
-def get_tables():
+def get_df(database):
+    # if on linux box this will work
+    # if not then running locally and need to use api
     try:
-        prod_table = Path('/home/michaellevy/data/prod/mbot/mbot_table.pkl')
-        backup_table = Path('/home/michaellevy/data/backup/mbot/mbot_table.pkl')
-        df_prod = pd.read_pickle(prod_table)
-        df_backup = pd.read_pickle(backup_table)
+        path = Path(f'/home/michaellevy/data/prod/{database}/mbot_table.pkl')    
+        df = pd.read_pickle(path)
     except Exception:
-        df_prod = utils.get_table('prod')
-        df_backup = utils.get_table('backup')
+        df = utils.get_table(database)
 
-    # get custom indexes
-    indexes = (_get_indexes(df_prod), _get_indexes(df_backup))
+    # get botnames
+    botnames = list(df['BOT NAME'].unique())
+    # add no filter option
+    botnames.insert(0, 'NO FILTER')
 
-    return df_prod, df_backup, indexes
+    return df, botnames
 
 
 def _get_indexes(df):
     index_list = range(len(df))
     index_list = ["RUN " + str(i) for i in index_list]
     return index_list
+
+
+def filter_df(df, dates, botname):
+    # check if one date or same date
+    if len(dates) == 1:
+        dates = (dates[0], dates[0] + timedelta(days=1))
+    elif dates[0] == dates[1]:
+        dates = (dates[0], dates[0] + timedelta(days=1))
+    else:
+        dates = (dates[0], dates[1] + timedelta(days=1))
+    
+    # add runs
+    df = df.assign(Runs=_get_indexes(df))
+
+    # check if filter by date or filter by date and botname
+    if botname == 'NO FILTER':
+        df = df[(df['DATE'] >= dates[0].strftime('%Y-%m-%d-%H:%M:%S')) &
+                (df['DATE'] <= dates[1].strftime('%Y-%m-%d-%H:%M:%S'))]
+    else:
+        df = df[(df['DATE'] >= dates[0].strftime('%Y-%m-%d-%H:%M:%S')) &
+                (df['DATE'] <= dates[1].strftime('%Y-%m-%d-%H:%M:%S')) &
+                (df['BOT NAME'] == botname)]
+    return df
 
 
 # display all keys
