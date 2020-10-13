@@ -66,7 +66,7 @@ int main(){
 		fprintf(stderr,"ERROR: can't talk to IMU! Exiting.\n");
 		return -1;
 	}else{
-        printf("Calibrated IMU...")
+        printf("Calibrated IMU...");
     }
 
 	//initialize state mutex
@@ -176,7 +176,7 @@ void read_mb_sensors(){
     mb_state.right_wheel_distance_delta = (float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
     
     // calculate current velocity
-    mb_state.left_velocity = ((float) mb_state.left_wheel_distance_delta / DT;
+    mb_state.left_velocity = (float) mb_state.left_wheel_distance_delta / DT;
     mb_state.right_velocity = (float) mb_state.right_wheel_distance_delta / DT;    
 
     // add current measurement to total
