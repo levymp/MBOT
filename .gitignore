@@ -9,6 +9,8 @@ tests/enum_test
 drive_simple_encoder/drive_simple_encoder
 bin/
 
+
+common/*.cfg
 # ignore .o files
 common/*.o
 mobilebot/*.o
@@ -20,9 +22,6 @@ drive_simple/*.o
 
 # ignore nohup
 documentation/nohup
-
-documentation/utils/__pycache__/*
-
 
 # ignore cache files
 documentation/__pycache__
@@ -36,4 +35,4 @@ documentation/nohup.out
 documentation/utils/__pycache__/api_utils.cpython-38.pyc
 documentation/utils/__pycache__/app_utils.cpython-38.pyc
 java/
-.gitignore
+
