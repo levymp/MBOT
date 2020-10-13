@@ -13,4 +13,6 @@ from .oled_message_t import oled_message_t
 from .pose_xyt_t import pose_xyt_t
 from .reset_odometry_t import reset_odometry_t
 from .robot_path_t import robot_path_t
+from .team31_setpoints_t import team31_setpoints_t
+from .team31_state_t import team31_state_t
 from .timestamp_t import timestamp_t

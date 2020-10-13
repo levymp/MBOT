@@ -36,6 +36,8 @@
 #include "../lcmtypes/oled_message_t.h"
 #include "../lcmtypes/timestamp_t.h"
 #include "../lcmtypes/reset_odometry_t.h"
+#include "../lcmtypes/team31_state_t.h"
+#include "../lcmtypes/team31_setpoints_t.h"
 
 #include "../common/mb_defs.h"
 #include "../common/mb_structs.h"

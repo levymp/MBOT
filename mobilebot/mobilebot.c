@@ -66,7 +66,7 @@ int main(){
 		fprintf(stderr,"ERROR: can't talk to IMU! Exiting.\n");
 		return -1;
 	}else{
-        printf("Calibrated IMU...")
+        printf("Calibrated IMU...");
     }
 
 	//initialize state mutex
@@ -176,7 +176,7 @@ void read_mb_sensors(){
     mb_state.right_wheel_distance_delta = (float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
     
     // calculate current velocity
-    mb_state.left_velocity = ((float) mb_state.left_wheel_distance_delta / DT;
+    mb_state.left_velocity = (float) mb_state.left_wheel_distance_delta / DT;
     mb_state.right_velocity = (float) mb_state.right_wheel_distance_delta / DT;    
 
     // add current measurement to total
@@ -210,6 +210,8 @@ void publish_mb_msgs(){
     mbot_imu_t imu_msg;
     mbot_encoder_t encoder_msg;
     odometry_t odo_msg;
+    team31_state_t state_msg;
+    team31_setpoints_t setpoints_msg;
 
     //Create IMU LCM Message
     imu_msg.utime = now;
@@ -228,16 +230,32 @@ void publish_mb_msgs(){
     encoder_msg.leftticks = mb_state.left_encoder_total;
     encoder_msg.rightticks = mb_state.right_encoder_total;
 
-    //TODO: Create Odometry LCM message
+    // Create Odometry LCM message
     odo_msg.utime = now;
     odo_msg.x = mb_odometry.x;
     odo_msg.y = mb_odometry.y;
     odo_msg.theta = mb_odometry.theta;
     
-    //publish IMU & Encoder Data to LCM
+    // Create State LCM message
+    state_msg.utime = now;
+    state_msg.fwd_velocity = mb_state.fwd_velocity;
+    state_msg.turn_velocity = mb_state.turn_velocity;
+    state_msg.left_velocity = mb_state.left_velocity;
+    state_msg.right_velocity = mb_state.right_velocity;
+    state_msg.yaw_delta = mb_state.yaw_delta;
+    state_msg.encoder_yaw_delta = mb_state.encoder_yaw_delta;
+
+    // Create Setpoints LCM message
+    setpoints_msg.utime = now; 
+    setpoints_msg.left_velocity = mb_setpoints.left_velocity;
+    setpoints_msg.right_velocity = mb_setpoints.right_velocity;
+
+    //publish IMU, Encoder, State, and Setpoints Data to LCM Channels
     mbot_imu_t_publish(lcm, MBOT_IMU_CHANNEL, &imu_msg);
     mbot_encoder_t_publish(lcm, MBOT_ENCODER_CHANNEL, &encoder_msg);
     odometry_t_publish(lcm, ODOMETRY_CHANNEL, &odo_msg);
+    team31_state_t_publish(lcm, TEAM31_STATE_CHANNEL, &state_msg);
+    team31_setpoints_t_publish(lcm, TEAM31_SETPOINTS_CHANNEL, &setpoints_msg);
 }
 
 /*******************************************************************************
