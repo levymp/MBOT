@@ -66,7 +66,7 @@ int main(){
 		fprintf(stderr,"ERROR: can't talk to IMU! Exiting.\n");
 		return -1;
 	}else{
-        printf("Calibrated IMU...");
+        printf("Calibrated IMU...\n");
     }
 
 	//initialize state mutex
