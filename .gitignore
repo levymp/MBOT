@@ -23,6 +23,14 @@ drive_simple/*.o
 # ignore nohup
 documentation/nohup
 
+
+documentation/utils/__pycache__/*
+
+lcmtypes/*.c
+lcmtypes/*.h
+lcmtypes/*.hpp
+lcmtypes/*.o
+
 # ignore cache files
 documentation/__pycache__
 
@@ -35,4 +43,3 @@ documentation/nohup.out
 documentation/utils/__pycache__/api_utils.cpython-38.pyc
 documentation/utils/__pycache__/app_utils.cpython-38.pyc
 java/
-
