@@ -65,7 +65,9 @@ int main(){
 	if(rc_mpu_initialize_dmp(&imu_data, imu_config)){
 		fprintf(stderr,"ERROR: can't talk to IMU! Exiting.\n");
 		return -1;
-	}
+	}else{
+        printf("Calibrated IMU...");
+    }
 
 	//initialize state mutex
     pthread_mutex_init(&state_mutex, NULL);
@@ -142,13 +144,21 @@ int main(){
 void read_mb_sensors(){
     pthread_mutex_lock(&state_mutex); 
     // Read IMU
+    // Read Tait Bryan Angles
     mb_state.tb_angles[0] = imu_data.dmp_TaitBryan[TB_PITCH_X];
     mb_state.tb_angles[1] = imu_data.dmp_TaitBryan[TB_ROLL_Y];
-    mb_state.last_yaw = mb_state.tb_angles[2];
+    
+    // Assign last yaw angle and new yaw angle
+    mb_state.last_yaw = mb_state.tb_angles[TB_YAW_Z];
     mb_state.tb_angles[2] = imu_data.dmp_TaitBryan[TB_YAW_Z];
-    mb_state.temp = imu_data.temp;
-    mb_state.yaw_delta = mb_state.tb_angles[2] - mb_state.last_yaw;
 
+    // read yaw delta
+    mb_state.yaw_delta = mb_state.tb_angles[TB_YAW_Z] - mb_state.last_yaw;
+
+    // read temperature
+    mb_state.temp = imu_data.temp;
+    
+    // read accel/gyro/magnetometer in all three axes
     int i;
     for(i=0;i<3;i++){
         mb_state.accel[i] = imu_data.accel[i];
@@ -157,20 +167,31 @@ void read_mb_sensors(){
     }
 
     // Read encoders    
+    // find the distance traveled on each encoder since last read
     mb_state.left_encoder_delta = LEFT_ENCODER_POLARITY * rc_encoder_read(LEFT_MOTOR);
     mb_state.right_encoder_delta = RIGHT_ENCODER_POLARITY * rc_encoder_read(RIGHT_MOTOR);
-    mb_state.left_velocity = ((float) mb_state.left_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES))/(DT);
-    mb_state.right_velocity = ((float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES))/(DT);    
+
+    // calculate the distance covered
+    mb_state.left_wheel_distance_delta = (float) mb_state.left_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
+    mb_state.right_wheel_distance_delta = (float) mb_state.right_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
+    
+    // calculate current velocity
+    mb_state.left_velocity = (float) mb_state.left_wheel_distance_delta / DT;
+    mb_state.right_velocity = (float) mb_state.right_wheel_distance_delta / DT;    
+
+    // add current measurement to total
     mb_state.left_encoder_total += mb_state.left_encoder_delta;
     mb_state.right_encoder_total += mb_state.right_encoder_delta;
+    
+    // reset encoder reading to 0
     rc_encoder_write(LEFT_MOTOR,0);
     rc_encoder_write(RIGHT_MOTOR,0);
 
+    // calculate turn/fwd velocity
     mb_state.turn_velocity = (mb_state.right_velocity - mb_state.left_velocity) / WHEEL_BASE;
     mb_state.fwd_velocity =  (mb_state.left_velocity + mb_state.right_velocity) / 2;
 
-    mb_state.left_wheel_distance_delta = mb_state.left_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
-    mb_state.right_wheel_distance_delta = mb_state.right_encoder_delta * (WHEEL_DIAMETER * PI) / (GEAR_RATIO * ENCODER_RES);
+    // calculate distance delta and encoder yaw delta 
     mb_state.distance_delta = (mb_state.left_wheel_distance_delta + mb_state.right_wheel_distance_delta) / 2;
     mb_state.encoder_yaw_delta = (mb_state.right_wheel_distance_delta - mb_state.left_wheel_distance_delta) / WHEEL_BASE;
 
@@ -241,8 +262,6 @@ void mobilebot_controller(){
     mb_controller_update(&mb_state, &mb_setpoints);
     mb_motor_set(RIGHT_MOTOR, RIGHT_MOTOR_POLARITY * mb_state.right_cmd);
     mb_motor_set(LEFT_MOTOR, LEFT_MOTOR_POLARITY * mb_state.left_cmd);
-
-
 }
 
 

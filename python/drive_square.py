@@ -35,4 +35,4 @@ class WaypointFollower():
         msg.utime = 0.0
         msg.trans_v = 0.0
         msg.angular_v = 0.0
-        self.lc.publish("MBOT_MOTOR_COMMAND",msg.encode())
+        self.lc.publish("MBOT_MOTOR_COMMAND", msg.encode())
