@@ -210,9 +210,9 @@ else:
 if rows == 1:
     font = 12
 elif rows == 2:
-    font = 9
-elif rows == 3:
     font = 7
+elif rows == 3:
+    font = 5
 else:
     font = 4
 
@@ -258,4 +258,11 @@ for yaxis, channel, i in zip(yaxes, selections, range(rows)):
 
 # plot subplot
 '#### PLOT'
+# get title
+st.sidebar.write('### PLOT TITLE')
+title = st.sidebar.text_input('', value='')
+
+if title != '':
+    fig.suptitle(title)
+
 st.pyplot(fig)
