@@ -246,14 +246,14 @@ for yaxis, channel, i in zip(yaxes, selections, range(rows)):
 
     # if > 1 selection use list otherwise use a single axis
     try:
-        if rows == 1:
-            axes[i].set_xlabel('TIME (s)')
-        axes[i].set_ylabel(label, color=palette(i), fontsize=font)
+        if i == 1:
+            axes[i].set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
+        axes[i].set_ylabel(label, color=palette(i), fontsize=font, fontweight='bold')
         axes[i].plot(time, y, color=palette(i))
     except Exception:
-        if rows == 1:
-            axes.set_xlabel('TIME (s)')
-        axes.set_ylabel(label, color=palette(i), fontsize=font)
+        if i == 1:
+            axes.set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
+        axes.set_ylabel(label, color=palette(i), fontsize=font, fontweight='bold')
         axes.plot(time, y, color=palette(i))
 
 # plot subplot
