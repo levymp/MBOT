@@ -263,6 +263,6 @@ st.sidebar.write('### PLOT TITLE')
 title = st.sidebar.text_input('', value='')
 
 if title != '':
-    fig.suptitle(title)
+    fig.suptitle(title, fontsize=16, fontweight='bold')
 
 st.pyplot(fig)
