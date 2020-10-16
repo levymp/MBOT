@@ -105,5 +105,4 @@ def shift(time_list, time=False):
     if time:
         return [(time - time_list[0])*1e-6 for time in time_list]
     else:
-        return [(time - time_list[0]) for time in time_list]
-
+        return [time for time in time_list]

@@ -242,7 +242,7 @@ for yaxis, channel, i in zip(yaxes, selections, range(rows)):
                                     options=range(len(df_run[channel][yaxis][0])), 
                                     index=0,
                                     key=key_list[i])
-        y = app_utils.shift([x[indx] for x in df_run['MBOT_IMU']['gyro']], time=False)
+        y = [x[indx] for x in df_run[channel][yaxis]]
 
     # if > 1 selection use list otherwise use a single axis
     try:
