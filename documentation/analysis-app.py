@@ -252,7 +252,7 @@ for yaxis, channel, i in zip(yaxes, selections, range(rows)):
         axes[i].plot(time, y, color=palette(i))
     except Exception:
         if rows == 1:
-            axes[i].set_xlabel('TIME (s)')
+            axes.set_xlabel('TIME (s)')
         axes.set_ylabel(label, color=palette(i), fontsize=font)
         axes.plot(time, y, color=palette(i))
 
