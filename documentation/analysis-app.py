@@ -159,7 +159,10 @@ st.sidebar.write('''### LCM CHANNELS''')
 # Get all columns and remove time sync
 cols = df_keys.keys()
 cols = list(cols)
-cols.remove('MBOT_TIMESYNC')
+try:
+    cols.remove('MBOT_TIMESYNC')
+except Exception:
+    pass
 
 # multi select the channel to view
 selections = st.sidebar.multiselect('',
