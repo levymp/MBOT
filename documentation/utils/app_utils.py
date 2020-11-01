@@ -2,6 +2,9 @@ from pathlib import Path
 import pandas as pd
 from datetime import datetime, timedelta
 import api_utils as utils
+import matplotlib.pyplot as plt
+
+
 
 def get_df(database):
     # if on linux box this will work
@@ -93,6 +96,7 @@ def file_to_time(df, runId, dateobj=True):
     else:
         return time.strftime('%Y-%m-%d-%H:%M:%S')
 
+
 def get_dropdown_list(series):
     '''Given pandas series return list w/out None and timestamp/utime'''
     series = series.dropna()
@@ -101,8 +105,46 @@ def get_dropdown_list(series):
     series.remove('utime')
     return series
 
+
 def shift(time_list, time=False):
     if time:
         return [(time - time_list[0])*1e-6 for time in time_list]
     else:
         return [time for time in time_list]
+
+
+def define_plot(plotInfo, channel, value, row, ylabel):
+    '''Set channel, value desired, row on plot, and ylabel'''
+    values = {'channel': channel, 'value': value, 'row': row, 'ylabel': ylabel}
+    plotInfo.append(values)
+    return plotInfo
+
+
+def get_plot(df, plotInfo, title, xlabel, rows):
+    # setup plot
+    plt.style.use('seaborn-darkgrid')
+    palette = plt.get_cmap('Set1')
+    fig, axes = plt.subplots(rows, 1)
+    num = 0
+    for val in plotInfo:
+        num+=1
+        channel = val['channel']
+        value = val['value']
+        row = val['row']
+        ylabel= val['ylabel']
+        time = shift(df[channel]['utime'], time=True)
+        axes[row].plot(time, df[channel][value], linewidth=1.2 ,color= palette(num) ,label=f'{channel}: {value}')
+        axes[row].legend(loc=2, prop={'size':6})
+        axes[row].set_ylabel(ylabel, fontsize=12, fontweight='bold')
+
+    axes[rows-1].set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
+
+    fig.suptitle(title, fontsize=16, fontweight='bold')
+    return fig
+
+
+
+
+
+
+
