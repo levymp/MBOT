@@ -134,8 +134,8 @@ def get_plot(df, plotInfo, title, xlabel, rows):
         ylabel= val['ylabel']
         time = shift(df[channel]['utime'], time=True)
         if rows > 1:
-            axes[row].plot(time, df[channel][value], linewidth=2 ,color= palette(num) ,label=f'{channel}: {value}')
-            axes[row].legend(loc=2, prop={'size':6})
+            axes[row].plot(time, df[channel][value], linewidth=2, color= palette(num), label=f'{channel}: {value}')
+            axes[row].legend(loc=2, prop={'size': 6})
             axes[row].set_ylabel(ylabel, fontsize=12, fontweight='bold')
         else:
             axes.plot(time, df[channel][value], linewidth=2 ,color= palette(num) ,label=f'{channel}: {value}')
