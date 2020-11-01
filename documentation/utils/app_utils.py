@@ -133,11 +133,19 @@ def get_plot(df, plotInfo, title, xlabel, rows):
         row = val['row']
         ylabel= val['ylabel']
         time = shift(df[channel]['utime'], time=True)
-        axes[row].plot(time, df[channel][value], linewidth=1.2 ,color= palette(num) ,label=f'{channel}: {value}')
-        axes[row].legend(loc=2, prop={'size':6})
-        axes[row].set_ylabel(ylabel, fontsize=12, fontweight='bold')
+        if rows > 1:
+            axes[row].plot(time, df[channel][value], linewidth=2 ,color= palette(num) ,label=f'{channel}: {value}')
+            axes[row].legend(loc=2, prop={'size':6})
+            axes[row].set_ylabel(ylabel, fontsize=12, fontweight='bold')
+        else:
+            axes.plot(time, df[channel][value], linewidth=2 ,color= palette(num) ,label=f'{channel}: {value}')
+            axes.legend(loc=2, prop={'size':6})
+            axes.set_ylabel(ylabel, fontsize=12, fontweight='bold')
 
-    axes[rows-1].set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
+    if row > 1:
+        axes[rows-1].set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
+    else:
+        axes.set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
 
     fig.suptitle(title, fontsize=16, fontweight='bold')
     return fig
