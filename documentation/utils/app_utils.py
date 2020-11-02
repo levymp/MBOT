@@ -142,7 +142,7 @@ def get_plot(df, plotInfo, title, xlabel, rows):
             axes.legend(loc=2, prop={'size':6})
             axes.set_ylabel(ylabel, fontsize=12, fontweight='bold')
 
-    if row > 1:
+    if rows > 1:
         axes[rows-1].set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
     else:
         axes.set_xlabel('TIME (s)', fontsize=12, fontweight='bold')
